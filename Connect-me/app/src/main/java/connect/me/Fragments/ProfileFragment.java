@@ -29,9 +29,9 @@ public class ProfileFragment extends DialogFragment {
     public static ProfileFragment newInstance(String title) {
 
         ProfileFragment frag = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString("title", title);
-        frag.setArguments(args);
+//        Bundle args = new Bundle();
+//        args.putString("title", title);
+//        frag.setArguments(args);
         return frag;
 
     }
@@ -50,17 +50,11 @@ public class ProfileFragment extends DialogFragment {
 
         super.onViewCreated(view, savedInstanceState);
 
-        // Get field from view
-        mEditText = (EditText) view.findViewById(R.id.txt_your_name);
-
         // Fetch arguments from bundle and set title
-        String title = getArguments().getString("title", "Enter Name");
-        getDialog().setTitle(title);
+//        String title = getArguments().getString("title", "Enter Name");
+//        getDialog().setTitle(title);
 
-        // Show soft keyboard automatically and request focus to field
-        mEditText.requestFocus();
-        getDialog().getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
 
     }
 
