@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="connect.me.CoverActivity"
+    android:background="@drawable/background"
+    >
+
+    <Button
+        android:id="@+id/btLogin"
+        android:layout_width="175dp"
+        android:layout_height="50dp"
+        android:background="@color/colorAccent"
+        android:text="Login"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="100dp"
+        tools:layout_editor_absoluteY="162dp"
+     />
+
+    <Button
+        android:id="@+id/btRegister"
+        android:layout_width="175dp"
+        android:layout_height="50dp"
+        android:background="@color/colorAccent"
+        android:text="Register"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="100dp"
+        tools:layout_editor_absoluteY="239dp" />
+</android.support.constraint.ConstraintLayout>
