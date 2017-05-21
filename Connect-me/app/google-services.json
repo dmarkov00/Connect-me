@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "818379248398",
+    "firebase_url": "https://connect-me-19cd4.firebaseio.com",
+    "project_id": "connect-me-19cd4",
+    "storage_bucket": "connect-me-19cd4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818379248398:android:f7e843127aa9fcfe",
+        "android_client_info": {
+          "package_name": "connect.me"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "818379248398-qhoovlf835ahp74vvtgoa6ql06agrejs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYm0DmS37Va5Eq7SQ299ef8Gz8x4-P_Xc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
