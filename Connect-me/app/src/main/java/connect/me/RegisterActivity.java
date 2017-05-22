@@ -1,6 +1,7 @@
 package connect.me;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -69,6 +70,10 @@ public class RegisterActivity extends AppCompatActivity  implements View.OnClick
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
+        //creating an intent to change to main activity after registration
+        final Intent MainIntent = new Intent(this,MainActivity.class);
+
+
         //check if the input fields are empty
         if(TextUtils.isEmpty(email)){
             //email is empty
@@ -94,8 +99,11 @@ public class RegisterActivity extends AppCompatActivity  implements View.OnClick
                             //user is successfully registered
                             Toast.makeText(RegisterActivity.this,"Registered successfully",Toast.LENGTH_SHORT).show();
 
+                            progressDialog.hide();
+                            startActivity(MainIntent);
                         }else{
                             Toast.makeText(RegisterActivity.this,"Could nor register. Please try again.",Toast.LENGTH_SHORT).show();
+                            progressDialog.hide();
                         }
                     }
                 });
