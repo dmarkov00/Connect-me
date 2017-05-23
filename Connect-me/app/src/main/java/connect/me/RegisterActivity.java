@@ -17,7 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class RegisterActivity extends AppCompatActivity  implements View.OnClickListener{
+public class RegisterActivity extends AppCompatActivity {
 
     private EditText etAge;
     private EditText etName;
@@ -39,6 +39,15 @@ public class RegisterActivity extends AppCompatActivity  implements View.OnClick
         //intializing firebase object
         firebaseAuth = FirebaseAuth.getInstance();
 
+        //tracking if the user is already signed in
+//        if(firebaseAuth.getCurrentUser() != null)//means that user is already logged in
+//        {
+//            main activity here
+//            finish();
+//            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+//
+//        }
+
         progressDialog = new ProgressDialog(this);
 
         etAge = (EditText) findViewById(R.id.etAge);
@@ -48,22 +57,18 @@ public class RegisterActivity extends AppCompatActivity  implements View.OnClick
         bRegister = (Button) findViewById(R.id.bRegister);
         tvSingIn = (TextView) findViewById(R.id.tvSignIn);
 
-        bRegister.setOnClickListener(this);
-        tvSingIn.setOnClickListener(this);
-
-
-
-    }
-
-    @Override
-    public void onClick(View v) {
-        if(v==bRegister){
-            registerUser();
-        }
-        //open the login activity
-        if(v==tvSingIn){
-
-        }
+        bRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerUser();
+            }
+        });
+        tvSingIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            }
+        });
     }
 
     private void registerUser() {
@@ -91,13 +96,21 @@ public class RegisterActivity extends AppCompatActivity  implements View.OnClick
         progressDialog.setMessage("Registering user in progress");
         progressDialog.show();
 
+        //create new user
         firebaseAuth.createUserWithEmailAndPassword(email,password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             //user is successfully registered
-                            Toast.makeText(RegisterActivity.this,"Registered successfully",Toast.LENGTH_SHORT).show();
+                            //tracking if the user is already signed in
+                            if(firebaseAuth.getCurrentUser() != null)//means that user is already logged in
+                            {
+                                //main activity here(map)
+                                finish();
+                                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+
+                            }
 
                             progressDialog.hide();
                             startActivity(MainIntent);

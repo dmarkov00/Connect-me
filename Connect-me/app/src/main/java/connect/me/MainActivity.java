@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //displaying new current user's location. Every time the user moves this method is called and current location is changed accordingly
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(Location location) { //from the location object we can get the lat and lng and store it in the database for the user (his unique ID)
         if (location == null){
             Toast.makeText(this, "Cannot get current location", Toast.LENGTH_LONG).show();
         }

@@ -10,16 +10,20 @@
 
     <Button
         android:id="@+id/btLogin"
-        android:layout_width="175dp"
+        android:layout_width="0dp"
         android:layout_height="50dp"
         android:background="@color/colorAccent"
         android:text="Login"
         android:textColor="@color/colorPrimaryDark"
         android:textStyle="bold"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="100dp"
-        tools:layout_editor_absoluteY="162dp"
-     />
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/btRegister"
+        app:layout_constraintRight_toRightOf="@+id/btRegister"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="27dp"
+        app:layout_constraintLeft_toLeftOf="@+id/btRegister" />
 
     <Button
         android:id="@+id/btRegister"
@@ -30,6 +34,14 @@
         android:textColor="@color/colorPrimaryDark"
         android:textStyle="bold"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="100dp"
-        tools:layout_editor_absoluteY="239dp" />
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.459"
+        app:layout_constraintVertical_bias="0.533" />
 </android.support.constraint.ConstraintLayout>
