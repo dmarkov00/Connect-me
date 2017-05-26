@@ -1,11 +1,12 @@
-package connect.me;
+package connect.me.activities;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import connect.me.Fragments.ProfileFragment;
+import connect.me.R;
+import connect.me.fragments.ProfileFragment;
 
 // Note: `FragmentActivity` works here as well
 public class TestActivity extends AppCompatActivity {

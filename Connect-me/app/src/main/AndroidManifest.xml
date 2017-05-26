@@ -29,18 +29,18 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB2ej3oGIYGI8LnjmBI_cl6MnnlWUl2t8s" />
 
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".activities.MainActivity"/>
 
-        <activity android:name=".TestActivity">
+        <activity android:name=".activities.TestActivity">
 
         </activity>
-        <activity android:name=".LoginActivity">
+        <activity android:name=".activities.LoginActivity">
 
             </activity>
-        <activity android:name=".RegisterActivity">
+        <activity android:name=".activities.RegisterActivity">
 
         </activity>
-        <activity android:name=".CoverActivity">
+        <activity android:name=".activities.CoverActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,4 +1,4 @@
-package connect.me.Fragments;
+package connect.me.fragments;
 
 
 import android.os.Bundle;
@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.app.DialogFragment;
-import android.view.WindowManager;
 import android.widget.EditText;
 
 import connect.me.R;

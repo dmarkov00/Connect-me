@@ -1,12 +1,13 @@
-package connect.me;
+package connect.me.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+
+import connect.me.R;
 
 public class CoverActivity extends AppCompatActivity {
 
