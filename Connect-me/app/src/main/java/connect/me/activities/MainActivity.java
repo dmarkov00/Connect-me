@@ -26,9 +26,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import connect.me.R;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerClickListener {
 
 
     GoogleMap mGoogleMap;
@@ -70,9 +74,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     //implementing GoogleApiClient.ConnectionCallbacks interface, here we check if the user has enabled his location
-     LocationRequest mLocationRequest;
+    LocationRequest mLocationRequest;
+
     @Override
-    public void onConnected( Bundle bundle) {
+    public void onConnected(Bundle bundle) {
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY); //gives the precise location of the user
         mLocationRequest.setInterval(1000); //every second the users location is refreshed
@@ -107,15 +112,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //displaying new current user's location. Every time the user moves this method is called and current location is changed accordingly
     @Override
     public void onLocationChanged(Location location) { //from the location object we can get the lat and lng and store it in the database for the user (his unique ID)
-        if (location == null){
+        if (location == null) {
             Toast.makeText(this, "Cannot get current location", Toast.LENGTH_LONG).show();
-        }
-        else{
+        } else {
             LatLng ll = new LatLng(location.getLatitude(), location.getLongitude()); //getting the current location
-            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll,15);
+            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, 15);
 
             //check if the marker exists
-            if (myMarker != null){
+            if (myMarker != null) {
                 myMarker.remove(); //removes the previous current location
             }
 
@@ -145,6 +149,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .build();
         //connecting the client
         mGoogleApiClient.connect();
+        // Here we call markers population
+        testMethodPopulateWithMarkers(mGoogleMap);
+
     }
 
 
@@ -154,5 +161,61 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         CameraUpdate update = CameraUpdateFactory.newLatLng(ll);
         mGoogleMap.moveCamera(update);
     }
+ // region Test logic
+    public class TestUser {
+        TestUser(String id, String name, double latitude, double longitude) {
+            this.id = id;
+            this.latitude = latitude;
+            this.name = name;
+            this.longitue = longitude;
+        }
 
+        public String id;
+        public String name;
+        public double longitue;
+        public double latitude;
+    }
+
+    List<TestUser> listOfUsers = new ArrayList<>();
+
+    private void testMethodPopulateWithMarkers(GoogleMap map) {
+        listOfUsers.add(new TestUser("testid1", "Shawn Paul", 10, 10));
+        listOfUsers.add(new TestUser("testid2", "John Paul", 10, 12));
+        listOfUsers.add(new TestUser("testid3", "Shawn Rambo", 10, 15));
+
+        for (TestUser user : listOfUsers) {
+            map.addMarker(new MarkerOptions()
+                    .position(new LatLng(user.latitude, user.longitue))
+                    .title(user.name))
+                    .setTag(user.id);
+        }
+
+        map.setOnMarkerClickListener(this);
+
+
+    }
+
+    public boolean onMarkerClick(final Marker marker) {
+
+        // Retrieve the data from the marker.
+        String userId = (String) marker.getTag();
+        for (TestUser user : listOfUsers) {
+            if (userId == user.id) {
+                Toast.makeText(this,
+                        user.name + " " + user.id,
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this,
+                        "nothing found",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+
+
+        // Return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return false;
+    }
+//endregion
 }

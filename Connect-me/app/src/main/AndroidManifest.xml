@@ -29,7 +29,14 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB2ej3oGIYGI8LnjmBI_cl6MnnlWUl2t8s" />
 
-        <activity android:name=".activities.MainActivity"/>
+        <activity android:name=".activities.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
 
         <activity android:name=".activities.TestActivity">
 
@@ -41,11 +48,11 @@
 
         </activity>
         <activity android:name=".activities.CoverActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
     </application>
 
