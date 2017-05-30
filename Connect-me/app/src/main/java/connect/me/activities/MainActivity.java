@@ -4,9 +4,12 @@ import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -30,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import connect.me.R;
+import connect.me.fragments.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerClickListener {
@@ -161,27 +165,63 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         CameraUpdate update = CameraUpdateFactory.newLatLng(ll);
         mGoogleMap.moveCamera(update);
     }
- // region Test logic
-    public class TestUser {
-        TestUser(String id, String name, double latitude, double longitude) {
+
+    // region Test logic
+    public class TestUser implements Parcelable {
+        TestUser(String id, String name, String phone, double latitude, double longitude) {
             this.id = id;
             this.latitude = latitude;
             this.name = name;
+            this.phone = phone;
             this.longitue = longitude;
         }
 
         public String id;
         public String name;
+        public String phone;
         public double longitue;
         public double latitude;
+
+        protected TestUser(Parcel in) {
+            id = in.readString();
+            name = in.readString();
+            phone = in.readString();
+            longitue = in.readDouble();
+            latitude = in.readDouble();
+        }
+
+        public final Creator<TestUser> CREATOR = new Creator<TestUser>() {
+            @Override
+            public TestUser createFromParcel(Parcel in) {
+                return new TestUser(in);
+            }
+
+            @Override
+            public TestUser[] newArray(int size) {
+                return new TestUser[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(id);
+            dest.writeString(name);
+            dest.writeDouble(longitue);
+            dest.writeDouble(latitude);
+        }
     }
 
     List<TestUser> listOfUsers = new ArrayList<>();
 
     private void testMethodPopulateWithMarkers(GoogleMap map) {
-        listOfUsers.add(new TestUser("testid1", "Shawn Paul", 10, 10));
-        listOfUsers.add(new TestUser("testid2", "John Paul", 10, 12));
-        listOfUsers.add(new TestUser("testid3", "Shawn Rambo", 10, 15));
+        listOfUsers.add(new TestUser("testid1", "Shawn Paul", "+23 323344", 10, 10));
+        listOfUsers.add(new TestUser("testid2", "Michael Paul","+23 111111", 10, 12));
+        listOfUsers.add(new TestUser("testid3", "Ivan Rambo","+23 999999", 10, 15));
 
         for (TestUser user : listOfUsers) {
             map.addMarker(new MarkerOptions()
@@ -192,7 +232,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         map.setOnMarkerClickListener(this);
 
-
     }
 
     public boolean onMarkerClick(final Marker marker) {
@@ -201,12 +240,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String userId = (String) marker.getTag();
         for (TestUser user : listOfUsers) {
             if (userId == user.id) {
+                FragmentManager fm = getSupportFragmentManager();
+                // We can pass the from the selected person and retrieve him from the database
+                ProfileFragment profileFragment = ProfileFragment.newInstance(user);
+                profileFragment.show(fm, "fragment_profile");
+
+                //////////////////////////////////
                 Toast.makeText(this,
                         user.name + " " + user.id,
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this,
-                        "nothing found",
                         Toast.LENGTH_SHORT).show();
             }
         }

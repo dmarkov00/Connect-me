@@ -22,8 +22,8 @@ public class TestActivity extends AppCompatActivity {
 
         FragmentManager fm = getSupportFragmentManager();
         // We can pass the from the selected person and retrieve him from the database
-        ProfileFragment profileFragment = ProfileFragment.newInstance("Some Title");
-        profileFragment.show(fm, "fragment_profile");
+//        ProfileFragment profileFragment = ProfileFragment.newInstance("Some Title");
+//        profileFragment.show(fm, "fragment_profile");
 
     }
     // Button handler

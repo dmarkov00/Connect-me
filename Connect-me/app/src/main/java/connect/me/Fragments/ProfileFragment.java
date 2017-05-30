@@ -8,8 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.app.DialogFragment;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import connect.me.R;
+import connect.me.activities.MainActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,35 +27,37 @@ public class ProfileFragment extends DialogFragment {
 
     }
 
-    public static ProfileFragment newInstance(String title) {
+    public static ProfileFragment newInstance(MainActivity.TestUser user) {
 
         ProfileFragment frag = new ProfileFragment();
-//        Bundle args = new Bundle();
-//        args.putString("title", title);
-//        frag.setArguments(args);
+        Bundle args = new Bundle();
+
+        args.putParcelable("user", user);
+        frag.setArguments(args);
         return frag;
 
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.material_design_profile_screen_xml_ui_design, container, false);
+        return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
     @Override
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
-
         super.onViewCreated(view, savedInstanceState);
 
-        // Fetch arguments from bundle and set title
-//        String title = getArguments().getString("title", "Enter Name");
-//        getDialog().setTitle(title);
+        MainActivity.TestUser user = getArguments().getParcelable("user");
 
+        TextView nameTextView = (TextView) view.findViewById(R.id.user_profile_name);
+        TextView phoneTextView = (TextView) view.findViewById(R.id.user_profile_phone_number);
 
+        nameTextView.setText(user.name);
+        phoneTextView.setText(user.phone);
 
     }
 
