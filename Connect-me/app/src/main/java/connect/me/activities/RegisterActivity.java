@@ -54,9 +54,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         etAge = (EditText) findViewById(R.id.etAge);
         etName = (EditText) findViewById(R.id.etName);
-        etEmail = (EditText) findViewById(R.id.etEmail);
-        etPassword = (EditText) findViewById(R.id.etPassword);
-        bRegister = (Button) findViewById(R.id.bRegister);
+        etEmail = (EditText) findViewById(R.id.etAgee);
+        etPassword = (EditText) findViewById(R.id.etPhoneNumber);
+        bRegister = (Button) findViewById(R.id.bSubmit);
         tvSingIn = (TextView) findViewById(R.id.tvSignIn);
 
         bRegister.setOnClickListener(new View.OnClickListener() {
