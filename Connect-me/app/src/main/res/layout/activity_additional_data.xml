@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/etAgee"
+        android:id="@+id/etAge"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -49,9 +49,9 @@
         android:hint="PhoneNumber"
         android:inputType="textPassword"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="@+id/etAgee"
-        app:layout_constraintRight_toRightOf="@+id/etAgee"
-        app:layout_constraintTop_toBottomOf="@+id/etAgee"
+        app:layout_constraintLeft_toLeftOf="@+id/etAge"
+        app:layout_constraintRight_toRightOf="@+id/etAge"
+        app:layout_constraintTop_toBottomOf="@+id/etAge"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1" />
