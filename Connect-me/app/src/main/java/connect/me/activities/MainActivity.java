@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .position(new LatLng(user.latitude, user.longitue))
                     .title(user.name))
                     .setTag(user.id);
-        }
+    }
 
         map.setOnMarkerClickListener(this);
 
