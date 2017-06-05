@@ -109,13 +109,13 @@ public class RegisterActivity extends AppCompatActivity {
                             {
                                 //main activity here(map)
                                 finish();
-                                startActivity(new Intent(getApplicationContext(),AdditionalUserData.class));
+                                startActivity(new Intent(getApplicationContext(),AdditionalDataActivity.class));
 
                             }
 
                             progressDialog.hide();
                             //startActivity(MainIntent);
-                            startActivity(new Intent(getApplicationContext(),AdditionalUserData.class));
+                            startActivity(new Intent(getApplicationContext(),AdditionalDataActivity.class));
 
                         }else{
                             Toast.makeText(RegisterActivity.this,"Could not register. Please try again.",Toast.LENGTH_SHORT).show();

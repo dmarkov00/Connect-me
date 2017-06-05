@@ -82,6 +82,6 @@ public class AdditionalDataActivity extends AppCompatActivity implements Adapter
         String name = (String) etName.getText().toString();
       int age = Integer.parseInt(etAge.getText().toString());
         String phoneNumber = (String) etPhoneNumber.getText().toString();
-        dispatcher.assignAdditionalData(name,age,phoneNumber,spinnerSelectedItem);
+        dispatcher.assignAdditionalDataToUser(name,age,phoneNumber,spinnerSelectedItem);
     }
 }

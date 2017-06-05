@@ -27,25 +27,21 @@ public class Dispatcher {
     private String userId;
     private AdditionalUserData additionalUserData;
 
-    public Dispatcher(){
+    public Dispatcher() {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         firebaseAuth = FirebaseAuth.getInstance();
 
     }
 
-    public void createUser(){
-        firebaseAuth.getCurrentUser();
+    public void assignAdditionalDataToUser(String name, int age, String phoneNumber, String gender) {
+        String userId = firebaseAuth.getCurrentUser().getUid();
 
+        additionalUserData = new AdditionalUserData(gender, null, phoneNumber, name, age);
+        mDatabase.child("additionalUserData").child(userId).setValue(additionalUserData);
     }
 
-   public void assignAdditionalData(String name, int age, String phoneNumber, String gender){
-            String userId = firebaseAuth.getCurrentUser().getUid();
-            additionalUserData = new AdditionalUserData(gender,null,phoneNumber,name,age);
-           mDatabase.child("additionalUserData").child(userId).setValue(additionalUserData);
-       }
 
-
-   }
+}
 
 
 
