@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -27,13 +28,20 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import connect.me.R;
+import connect.me.databaseIntegration.models.AdditionalUserData;
+import connect.me.databaseIntegration.models.User;
 import connect.me.fragments.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
@@ -44,21 +52,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     GoogleApiClient mGoogleApiClient;
     Marker myMarker;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         if (googleServicesAvailable()) {
             Toast.makeText(this, "Great!", Toast.LENGTH_LONG).show();
             setContentView(R.layout.activity_main);
             initMap();
-            
+
             ProfileFragment profileFragment;
         } else {
             //no Google Maps layout
         }
     }
+
 
     //retrieving the map fragment
     private void initMap() {
@@ -225,15 +234,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void testMethodPopulateWithMarkers(GoogleMap map) {
         listOfUsers.add(new TestUser("testid1", "Shawn Paul", "+23 323344", 10, 10));
-        listOfUsers.add(new TestUser("testid2", "Michael Paul","+23 111111", 10, 12));
-        listOfUsers.add(new TestUser("testid3", "Ivan Rambo","+23 999999", 10, 15));
+        listOfUsers.add(new TestUser("testid2", "Michael Paul", "+23 111111", 10, 12));
+        listOfUsers.add(new TestUser("testid3", "Ivan Rambo", "+23 999999", 10, 15));
 
         for (TestUser user : listOfUsers) {
             map.addMarker(new MarkerOptions()
                     .position(new LatLng(user.latitude, user.longitude))
                     .title(user.name))
                     .setTag(user.id);
-    }
+        }
 
         map.setOnMarkerClickListener(this);
 

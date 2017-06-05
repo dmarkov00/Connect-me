@@ -13,15 +13,18 @@ public class AdditionalUserData {
     private String phoneNumber;
     private String name;
     private int age;
+    public AdditionalUserData(){}
 
-    public AdditionalUserData(String gender, Location location, String phoneNumber, String name, int age) {
+    public AdditionalUserData(String gender, double longitude,double latitude, String phoneNumber, String name, int age) {
         this.gender = gender;
-        this.location = location;
         this.phoneNumber = phoneNumber;
         this.name = name;
         this.age = age;
+        // Setting location
+        this.location = new Location("User");
+        this.location.setLongitude(longitude);
+        this.location.setLatitude(latitude);
     }
-
     public String getName() {
         return name;
     }
