@@ -18,11 +18,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import connect.me.R;
+import connect.me.databaseIntegration.models.AdditionalUserData;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText etAge;
-    private EditText etName;
+
     private EditText etEmail;
     private EditText etPassword;
     private Button bRegister;
@@ -52,11 +52,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(this);
 
-        etAge = (EditText) findViewById(R.id.etAge);
-        etName = (EditText) findViewById(R.id.etName);
-        etEmail = (EditText) findViewById(R.id.etEmail);
-        etPassword = (EditText) findViewById(R.id.etPassword);
-        bRegister = (Button) findViewById(R.id.bRegister);
+
+        etEmail = (EditText) findViewById(R.id.etAge);
+        etPassword = (EditText) findViewById(R.id.etPhoneNumber);
+        bRegister = (Button) findViewById(R.id.bSubmit);
         tvSingIn = (TextView) findViewById(R.id.tvSignIn);
 
         bRegister.setOnClickListener(new View.OnClickListener() {
@@ -110,14 +109,16 @@ public class RegisterActivity extends AppCompatActivity {
                             {
                                 //main activity here(map)
                                 finish();
-                                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                                startActivity(new Intent(getApplicationContext(),AdditionalUserData.class));
 
                             }
 
                             progressDialog.hide();
-                            startActivity(MainIntent);
+                            //startActivity(MainIntent);
+                            startActivity(new Intent(getApplicationContext(),AdditionalUserData.class));
+
                         }else{
-                            Toast.makeText(RegisterActivity.this,"Could nor register. Please try again.",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this,"Could not register. Please try again.",Toast.LENGTH_SHORT).show();
                             progressDialog.hide();
                         }
                     }

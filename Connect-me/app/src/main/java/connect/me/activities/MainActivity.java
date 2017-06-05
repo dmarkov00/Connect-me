@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +27,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,13 +44,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     GoogleApiClient mGoogleApiClient;
     Marker myMarker;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (googleServicesAvailable()) {
             Toast.makeText(this, "Great!", Toast.LENGTH_LONG).show();
             setContentView(R.layout.activity_main);
             initMap();
+            
+            ProfileFragment profileFragment;
         } else {
             //no Google Maps layout
         }
@@ -173,20 +178,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             this.latitude = latitude;
             this.name = name;
             this.phone = phone;
-            this.longitue = longitude;
+            this.longitude = longitude;
         }
 
         public String id;
         public String name;
         public String phone;
-        public double longitue;
+        public double longitude;
         public double latitude;
 
         protected TestUser(Parcel in) {
             id = in.readString();
             name = in.readString();
             phone = in.readString();
-            longitue = in.readDouble();
+            longitude = in.readDouble();
             latitude = in.readDouble();
         }
 
@@ -211,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(id);
             dest.writeString(name);
-            dest.writeDouble(longitue);
+            dest.writeDouble(longitude);
             dest.writeDouble(latitude);
         }
     }
@@ -225,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         for (TestUser user : listOfUsers) {
             map.addMarker(new MarkerOptions()
-                    .position(new LatLng(user.latitude, user.longitue))
+                    .position(new LatLng(user.latitude, user.longitude))
                     .title(user.name))
                     .setTag(user.id);
     }
@@ -249,6 +254,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Toast.makeText(this,
                         user.name + " " + user.id,
                         Toast.LENGTH_SHORT).show();
+                return true;
             }
         }
 
