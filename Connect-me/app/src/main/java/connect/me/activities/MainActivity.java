@@ -25,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -45,17 +46,25 @@ import connect.me.databaseIntegration.models.User;
 import connect.me.fragments.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMarkerClickListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
 
     GoogleMap mGoogleMap;
     GoogleApiClient mGoogleApiClient;
     Marker myMarker;
+    private FirebaseAuth firebaseAuth;
+    private String userId;
+    private DatabaseReference mDatabase;
+    private List<AdditionalUserData> userData;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("additionalUserData");
+        userData = new ArrayList<>();
+        firebaseAuth = FirebaseAuth.getInstance();
+        userId = firebaseAuth.getCurrentUser().getUid();
 
         if (googleServicesAvailable()) {
             Toast.makeText(this, "Great!", Toast.LENGTH_LONG).show();
@@ -130,27 +139,39 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //displaying new current user's location. Every time the user moves this method is called and current location is changed accordingly
     @Override
     public void onLocationChanged(Location location) { //from the location object we can get the lat and lng and store it in the database for the user (his unique ID)
+
         if (location == null) {
             Toast.makeText(this, "Cannot get current location", Toast.LENGTH_LONG).show();
         } else {
             LatLng ll = new LatLng(location.getLatitude(), location.getLongitude()); //getting the current location
-            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, 15);
 
-            //check if the marker exists
-            if (myMarker != null) {
-                myMarker.remove(); //removes the previous current location
-            }
+            mDatabase.child(userId).child("latitude").setValue(ll.latitude);
+            mDatabase.child(userId).child("longitude").setValue(ll.longitude);
+            placeMarker(new LatLng(ll.latitude,ll.longitude),"");
 
-            //adding a marker
-            MarkerOptions options = new MarkerOptions()
-                    .position(ll);
-            myMarker = mGoogleMap.addMarker(options);
+            //CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, 15);
 
-            mGoogleMap.animateCamera(update);
-
-
+            //mGoogleMap.animateCamera(update);
         }
 
+    }
+
+    public void placeMarker(LatLng ll,String key){
+//        //check if the marker exists
+//        if (myMarker != null) {
+//            myMarker.remove(); //removes the previous current location
+//        }
+        if(firebaseAuth.getCurrentUser().getUid() == key){
+            Log.e("KEYS",firebaseAuth.getCurrentUser().getUid());
+            Log.e("KEY-S",key);
+            if (myMarker != null) {
+                myMarker.remove(); //removes the previous current location
+              }
+        }
+
+        //adding a marker
+        MarkerOptions options = new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        myMarker = mGoogleMap.addMarker(options);
     }
 
     //implementation of OnMapReadyCallback interface
@@ -159,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mGoogleMap = googleMap;
 
+
         //crating an object of googleApiClient
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -166,9 +188,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .addOnConnectionFailedListener(this)
                 .build();
         //connecting the client
+        getUsers();
         mGoogleApiClient.connect();
-        // Here we call markers population
-        testMethodPopulateWithMarkers(mGoogleMap);
+
+
 
     }
 
@@ -180,98 +203,72 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleMap.moveCamera(update);
     }
 
+    private void getUsers(){
+
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot u : dataSnapshot.getChildren()){
+                    AdditionalUserData additionalUserData = u.getValue(AdditionalUserData.class);
+                    //just in case
+                    userData.add(additionalUserData);
+                    Log.e("LOCATION",additionalUserData.getLatitude() + "-" + additionalUserData.getLongitude());
+                    placeMarker(new LatLng(additionalUserData.getLatitude(),additionalUserData.getLongitude()),dataSnapshot.getKey());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
     // region Test logic
-    public class TestUser implements Parcelable {
-        TestUser(String id, String name, String phone, double latitude, double longitude) {
-            this.id = id;
-            this.latitude = latitude;
-            this.name = name;
-            this.phone = phone;
-            this.longitude = longitude;
-        }
-
-        public String id;
-        public String name;
-        public String phone;
-        public double longitude;
-        public double latitude;
-
-        protected TestUser(Parcel in) {
-            id = in.readString();
-            name = in.readString();
-            phone = in.readString();
-            longitude = in.readDouble();
-            latitude = in.readDouble();
-        }
-
-        public final Creator<TestUser> CREATOR = new Creator<TestUser>() {
-            @Override
-            public TestUser createFromParcel(Parcel in) {
-                return new TestUser(in);
-            }
-
-            @Override
-            public TestUser[] newArray(int size) {
-                return new TestUser[size];
-            }
-        };
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(id);
-            dest.writeString(name);
-            dest.writeDouble(longitude);
-            dest.writeDouble(latitude);
-        }
-    }
-
-    List<TestUser> listOfUsers = new ArrayList<>();
-
-    private void testMethodPopulateWithMarkers(GoogleMap map) {
-        listOfUsers.add(new TestUser("testid1", "Shawn Paul", "+23 323344", 10, 10));
-        listOfUsers.add(new TestUser("testid2", "Michael Paul", "+23 111111", 10, 12));
-        listOfUsers.add(new TestUser("testid3", "Ivan Rambo", "+23 999999", 10, 15));
-
-        for (TestUser user : listOfUsers) {
-            map.addMarker(new MarkerOptions()
-                    .position(new LatLng(user.latitude, user.longitude))
-                    .title(user.name))
-                    .setTag(user.id);
-        }
-
-        map.setOnMarkerClickListener(this);
-
-    }
-
-    public boolean onMarkerClick(final Marker marker) {
-
-        // Retrieve the data from the marker.
-        String userId = (String) marker.getTag();
-        for (TestUser user : listOfUsers) {
-            if (userId == user.id) {
-                FragmentManager fm = getSupportFragmentManager();
-                // We can pass the from the selected person and retrieve him from the database
-                ProfileFragment profileFragment = ProfileFragment.newInstance(user);
-                profileFragment.show(fm, "fragment_profile");
-
-                //////////////////////////////////
-                Toast.makeText(this,
-                        user.name + " " + user.id,
-                        Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        }
 
 
-        // Return false to indicate that we have not consumed the event and that we wish
-        // for the default behavior to occur (which is for the camera to move such that the
-        // marker is centered and for the marker's info window to open, if it has one).
-        return false;
-    }
+
+
+//    private void testMethodPopulateWithMarkers(GoogleMap map) {
+//
+//
+//        for (TestUser user : listOfUsers) {
+//            map.addMarker(new MarkerOptions()
+//                    .position(new LatLng(user.latitude, user.longitude))
+//                    .title(user.name))
+//                    .setTag(user.id);
+//        }
+//
+//        map.setOnMarkerClickListener(this);
+//
+//    }
+
+//    public boolean onMarkerClick(final Marker marker) {
+//
+//        // Retrieve the data from the marker.
+//        String userId = (String) marker.getTag();
+//        for (TestUser user : listOfUsers) {
+//            if (userId == user.id) {
+//                FragmentManager fm = getSupportFragmentManager();
+//                // We can pass the from the selected person and retrieve him from the database
+//                ProfileFragment profileFragment = ProfileFragment.newInstance(user);
+//                profileFragment.show(fm, "fragment_profile");
+//
+//                //////////////////////////////////
+//                Toast.makeText(this,
+//                        user.name + " " + user.id,
+//                        Toast.LENGTH_SHORT).show();
+//                return true;
+//            }
+//        }
+//
+//
+//        // Return false to indicate that we have not consumed the event and that we wish
+//        // for the default behavior to occur (which is for the camera to move such that the
+//        // marker is centered and for the marker's info window to open, if it has one).
+//        return false;
+//    }
 //endregion
+
+
 }

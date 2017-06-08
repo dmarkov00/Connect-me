@@ -2,6 +2,7 @@ package connect.me.fragments;
 
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import connect.me.R;
 import connect.me.activities.MainActivity;
+import connect.me.databaseIntegration.models.AdditionalUserData;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,12 +29,12 @@ public class ProfileFragment extends DialogFragment {
 
     }
 
-    public static ProfileFragment newInstance(MainActivity.TestUser user) {
+    public static ProfileFragment newInstance(AdditionalUserData user) {
 
         ProfileFragment frag = new ProfileFragment();
         Bundle args = new Bundle();
 
-        args.putParcelable("user", user);
+        args.putParcelable("user", (Parcelable) user);
         frag.setArguments(args);
         return frag;
 
@@ -51,13 +53,13 @@ public class ProfileFragment extends DialogFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        MainActivity.TestUser user = getArguments().getParcelable("user");
+        AdditionalUserData user = getArguments().getParcelable("user");
 
         TextView nameTextView = (TextView) view.findViewById(R.id.user_profile_name);
         TextView phoneTextView = (TextView) view.findViewById(R.id.user_profile_phone_number);
 
-        nameTextView.setText(user.name);
-        phoneTextView.setText(user.phone);
+//        nameTextView.setText(user.name);
+//        phoneTextView.setText(user.phone);
 
     }
 

@@ -9,21 +9,20 @@ import android.location.Location;
 public class AdditionalUserData {
 
     private String gender;
-    private Location location;
+    double latitude;
+    double longitude;
     private String phoneNumber;
     private String name;
     private int age;
     public AdditionalUserData(){}
 
-    public AdditionalUserData(String gender, double longitude,double latitude, String phoneNumber, String name, int age) {
+    public AdditionalUserData(String gender, String phoneNumber, String name, int age) {
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.name = name;
         this.age = age;
-        // Setting location
-        this.location = new Location("User");
-        this.location.setLongitude(longitude);
-        this.location.setLatitude(latitude);
+        this.longitude = 0;
+        this.latitude = 0;
     }
     public String getName() {
         return name;
@@ -50,17 +49,25 @@ public class AdditionalUserData {
         this.gender = gender;
     }
 
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+//    public void setLatitude(double latitude) {
+//        this.latitude = latitude;
+//    }
+//
+    public double getLongitude() {
+        return longitude;
+    }
+//
+//    public void setLongitude(double longitude) {
+//        this.longitude = longitude;
+//    }
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
