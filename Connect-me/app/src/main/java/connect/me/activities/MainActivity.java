@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     GoogleMap mGoogleMap;
     GoogleApiClient mGoogleApiClient;
     Marker myMarker;
+    List<Marker> markersList;
     private FirebaseAuth firebaseAuth;
     private String userId;
     private DatabaseReference mDatabase;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDatabase = FirebaseDatabase.getInstance().getReference().child("additionalUserData");
         userData = new ArrayList<>();
         firebaseAuth = FirebaseAuth.getInstance();
+        markersList = new ArrayList<>();
         userId = firebaseAuth.getCurrentUser().getUid();
 
         if (googleServicesAvailable()) {
@@ -147,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             mDatabase.child(userId).child("latitude").setValue(ll.latitude);
             mDatabase.child(userId).child("longitude").setValue(ll.longitude);
-            placeMarker(new LatLng(ll.latitude,ll.longitude),"");
+            //placeMarker(new LatLng(ll.latitude,ll.longitude),"");
 
             //CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, 15);
 
@@ -161,17 +163,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        if (myMarker != null) {
 //            myMarker.remove(); //removes the previous current location
 //        }
-        if(firebaseAuth.getCurrentUser().getUid() == key){
-            Log.e("KEYS",firebaseAuth.getCurrentUser().getUid());
-            Log.e("KEY-S",key);
-            if (myMarker != null) {
-                myMarker.remove(); //removes the previous current location
-              }
+//        Log.e("KEYS",firebaseAuth.getCurrentUser().getUid());
+//        Log.e("KEY-S",key);
+        if(firebaseAuth.getCurrentUser().getUid().equals(key)){
+
+            for(Marker m : markersList){
+//                Log.e("KEY 1",key);
+//                Log.e("KEY 2",m.getTitle());
+                if (m.getTitle().equals(key)) {
+
+                    m.remove(); //removes the previous current location
+                    //Log.e("REM","OVED");
+                }
+            }
+
         }
 
         //adding a marker
-        MarkerOptions options = new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        MarkerOptions options = new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).title(key);
         myMarker = mGoogleMap.addMarker(options);
+        markersList.add(myMarker);
     }
 
     //implementation of OnMapReadyCallback interface
@@ -213,7 +224,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     //just in case
                     userData.add(additionalUserData);
                     Log.e("LOCATION",additionalUserData.getLatitude() + "-" + additionalUserData.getLongitude());
-                    placeMarker(new LatLng(additionalUserData.getLatitude(),additionalUserData.getLongitude()),dataSnapshot.getKey());
+                    if(additionalUserData.getLongitude() == 0 || additionalUserData.getLatitude() == 0){
+                        return;
+                    }
+                    placeMarker(new LatLng(additionalUserData.getLatitude(),additionalUserData.getLongitude()),u.getKey());
                 }
 
             }
