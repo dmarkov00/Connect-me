@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DatabaseReference mDatabase;
     private List<AdditionalUserData> userData;
     private Location currentLoggedInUserLocation;
+    private HashMap<String, AdditionalUserData> userIdAdditionalUserDataMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,7 +225,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot u : dataSnapshot.getChildren()) {
+
                     AdditionalUserData additionalUserData = u.getValue(AdditionalUserData.class);
+                    userIdAdditionalUserDataMap.put(u.getKey(),additionalUserData);
+
                     //just in case
                     userData.add(additionalUserData);
                     Log.e("LOCATION", additionalUserData.getLatitude() + "-" + additionalUserData.getLongitude());
@@ -243,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-
+    // region Test logic
     private void testMethodPopulateWithMarkers(GoogleMap map) {
 
 
@@ -266,31 +270,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private List<Float> listOfDistancesBetweenUsers;
-    private HashMap<String, Float> markerIdAndDistanceMap = new HashMap<>();
-
-    float distance;
-    Location peerUserLocation = new Location("");
-
-    private void distanceFilter(float distanceInMeters) {
-        for (Marker markers : markersList) {
-
-            // Retrieving location from peer users and transforming it Location object
-            peerUserLocation.setLongitude(markers.getPosition().longitude);
-            peerUserLocation.setLatitude(markers.getPosition().latitude);
-
-            // calculate distance to each user
-            distance = currentLoggedInUserLocation.distanceTo(peerUserLocation);
-
-            String peerUserId = markers.getTag() + "";
-            // Add them in a hashmap by id and distance so we can remove them later
-            markerIdAndDistanceMap.put(peerUserId, distance);
 
 
-        }
-    }
 
-// region Test logic
+
 
 //    public boolean onMarkerClick(final Marker marker) {
 //

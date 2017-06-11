@@ -2,6 +2,8 @@ package connect.me.databaseIntegration.models;
 
 import android.location.Location;
 
+import com.google.firebase.database.Exclude;
+
 /**
  * Created by Mirela on 6/1/2017.
  */
@@ -9,8 +11,12 @@ import android.location.Location;
 public class AdditionalUserData {
 
     private String gender;
-    double latitude;
-    double longitude;
+
+
+
+    private boolean filtered;
+    private double latitude;
+    private double longitude;
     private String phoneNumber;
     private String name;
     private int age;
@@ -72,4 +78,13 @@ public class AdditionalUserData {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+    @Exclude
+    public boolean isFiltered() {
+        return filtered;
+    }
+
+    public void setFiltered(boolean filtered) {
+        this.filtered = filtered;
+    }
 }
+
