@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context="connect.me.activities.MainActivity">
 
+
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.google.android.gms.maps.MapFragment"
@@ -14,5 +15,7 @@
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp"
         tools:ignore="MissingConstraints" />
+
+
 
 </android.support.constraint.ConstraintLayout>

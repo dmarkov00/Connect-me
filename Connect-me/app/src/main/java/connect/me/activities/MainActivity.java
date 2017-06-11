@@ -1,17 +1,19 @@
 package connect.me.activities;
 
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -30,20 +32,32 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import connect.me.R;
 import connect.me.databaseIntegration.models.AdditionalUserData;
-import connect.me.databaseIntegration.models.User;
+import connect.me.fragments.EditProfileFragment;
+import connect.me.fragments.OwnProfileFragment;
 import connect.me.fragments.ProfileFragment;
+
+import static android.R.attr.fragment;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -57,16 +71,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String userId;
     private DatabaseReference mDatabase;
     private List<AdditionalUserData> userData;
+    private String username;
+    private String email;
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         mDatabase = FirebaseDatabase.getInstance().getReference().child("additionalUserData");
         userData = new ArrayList<>();
         firebaseAuth = FirebaseAuth.getInstance();
         markersList = new ArrayList<>();
         userId = firebaseAuth.getCurrentUser().getUid();
+        username = firebaseAuth.getCurrentUser().getDisplayName();
+        email = firebaseAuth.getCurrentUser().getEmail();
+
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+
+        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName("Home");
+
+
 
         if (googleServicesAvailable()) {
             Toast.makeText(this, "Great!", Toast.LENGTH_LONG).show();
@@ -77,7 +106,53 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             //no Google Maps layout
         }
+
+        new DrawerBuilder().withActivity(this).build();
+
+        AccountHeader headerResult = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.drawable.abc_btn_colored_material)
+                .addProfiles(
+                        new ProfileDrawerItem().withName(username).withEmail(email).withIcon(getResources().getDrawable(R.drawable.default_profile_picture))
+                )
+                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                    @Override
+                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
+                        return false;
+                    }
+                })
+                .build();
+
+//create the drawer and remember the `Drawer` result object
+        Drawer result = new DrawerBuilder()
+                .withActivity(this)
+           //     .withToolbar(toolbar)
+              //  .withRootView(R.id.drawer_layout)
+                .withAccountHeader(headerResult)
+                .withActionBarDrawerToggle(true)
+                .withTranslucentStatusBar(false)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withIdentifier(1).withName("My Profile"),
+                        new SecondaryDrawerItem().withIdentifier(2).withName("About")
+
+                )
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+//                        // do something with the clicked item :D
+
+                        OwnProfileFragment fragment = new OwnProfileFragment();
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.mapFragment, fragment)
+                                .commit();
+                        return true;}
+
+                })
+                .build();
     }
+
+
 
 
     //retrieving the map fragment
@@ -238,6 +313,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+
+
     // region Test logic
 
 
