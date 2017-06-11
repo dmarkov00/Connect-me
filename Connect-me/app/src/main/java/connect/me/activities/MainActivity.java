@@ -38,7 +38,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import connect.me.R;
 import connect.me.databaseIntegration.models.AdditionalUserData;
@@ -57,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String userId;
     private DatabaseReference mDatabase;
     private List<AdditionalUserData> userData;
-
+    private Location currentLoggedInUserLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             //no Google Maps layout
         }
     }
-
+// region Map connection methods
 
     //retrieving the map fragment
     private void initMap() {
@@ -104,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //implementing GoogleApiClient.ConnectionCallbacks interface, here we check if the user has enabled his location
     LocationRequest mLocationRequest;
+
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -136,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-
+// endregion
 
     //displaying new current user's location. Every time the user moves this method is called and current location is changed accordingly
     @Override
@@ -146,7 +149,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(this, "Cannot get current location", Toast.LENGTH_LONG).show();
         } else {
             LatLng ll = new LatLng(location.getLatitude(), location.getLongitude()); //getting the current location
-
+            // Getting location for use in other methods
+            currentLoggedInUserLocation = location;
             mDatabase.child(userId).child("latitude").setValue(ll.latitude);
             mDatabase.child(userId).child("longitude").setValue(ll.longitude);
             //placeMarker(new LatLng(ll.latitude,ll.longitude),"");
@@ -158,16 +162,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    public void placeMarker(LatLng ll,String key){
+    public void placeMarker(LatLng ll, String key) {
 //        //check if the marker exists
 //        if (myMarker != null) {
 //            myMarker.remove(); //removes the previous current location
 //        }
 //        Log.e("KEYS",firebaseAuth.getCurrentUser().getUid());
 //        Log.e("KEY-S",key);
-        if(firebaseAuth.getCurrentUser().getUid().equals(key)){
+        if (firebaseAuth.getCurrentUser().getUid().equals(key)) {
 
-            for(Marker m : markersList){
+            for (Marker m : markersList) {
 //                Log.e("KEY 1",key);
 //                Log.e("KEY 2",m.getTitle());
                 if (m.getTitle().equals(key)) {
@@ -203,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleApiClient.connect();
 
 
-
+//        testMethodPopulateWithMarkers(googleMap);
     }
 
 
@@ -214,48 +218,79 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mGoogleMap.moveCamera(update);
     }
 
-    private void getUsers(){
+    private void getUsers() {
 
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot u : dataSnapshot.getChildren()){
+                for (DataSnapshot u : dataSnapshot.getChildren()) {
                     AdditionalUserData additionalUserData = u.getValue(AdditionalUserData.class);
                     //just in case
                     userData.add(additionalUserData);
-                    Log.e("LOCATION",additionalUserData.getLatitude() + "-" + additionalUserData.getLongitude());
-                    if(additionalUserData.getLongitude() == 0 || additionalUserData.getLatitude() == 0){
+                    Log.e("LOCATION", additionalUserData.getLatitude() + "-" + additionalUserData.getLongitude());
+                    if (additionalUserData.getLongitude() == 0 || additionalUserData.getLatitude() == 0) {
                         return;
                     }
-                    placeMarker(new LatLng(additionalUserData.getLatitude(),additionalUserData.getLongitude()),u.getKey());
+                    placeMarker(new LatLng(additionalUserData.getLatitude(), additionalUserData.getLongitude()), u.getKey());
                 }
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                userId = firebaseAuth.getCurrentUser().getUid();
             }
         });
     }
-    // region Test logic
 
 
+    private void testMethodPopulateWithMarkers(GoogleMap map) {
 
 
-//    private void testMethodPopulateWithMarkers(GoogleMap map) {
-//
-//
-//        for (TestUser user : listOfUsers) {
-//            map.addMarker(new MarkerOptions()
-//                    .position(new LatLng(user.latitude, user.longitude))
-//                    .title(user.name))
-//                    .setTag(user.id);
-//        }
-//
-//        map.setOnMarkerClickListener(this);
-//
-//    }
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(12, 12))
+                .title("gancho"))
+                .setTag(1);
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(12, 13))
+                .title("pancho"))
+                .setTag(1);
+        float[] results = new float[1];
+        Location.distanceBetween(12, 12, 12, 13, results);
+        for (float result : results) {
+            Toast.makeText(this,
+                    result + "",
+                    Toast.LENGTH_SHORT).show();
+
+
+        }
+    }
+
+    private List<Float> listOfDistancesBetweenUsers;
+    private HashMap<String, Float> markerIdAndDistanceMap = new HashMap<>();
+
+    float distance;
+    Location peerUserLocation = new Location("");
+
+    private void distanceFilter(float distanceInMeters) {
+        for (Marker markers : markersList) {
+
+            // Retrieving location from peer users and transforming it Location object
+            peerUserLocation.setLongitude(markers.getPosition().longitude);
+            peerUserLocation.setLatitude(markers.getPosition().latitude);
+
+            // calculate distance to each user
+            distance = currentLoggedInUserLocation.distanceTo(peerUserLocation);
+
+            String peerUserId = markers.getTag() + "";
+            // Add them in a hashmap by id and distance so we can remove them later
+            markerIdAndDistanceMap.put(peerUserId, distance);
+
+
+        }
+    }
+
+// region Test logic
 
 //    public boolean onMarkerClick(final Marker marker) {
 //

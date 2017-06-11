@@ -34,7 +34,7 @@ public class Dispatcher {
 
     public void assignAdditionalDataToUser(String name, int age, String phoneNumber, String gender) {
         String userId = firebaseAuth.getCurrentUser().getUid();
-        // should pass real location not 12 12
+
         additionalUserData = new AdditionalUserData(gender, phoneNumber, name, age);
         mDatabase.child("additionalUserData").child(userId).setValue(additionalUserData);
     }
