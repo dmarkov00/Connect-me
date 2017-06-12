@@ -73,6 +73,18 @@
                 android:textColor="#fff"
                 android:textSize="14sp" />
 
+            <TextView
+                android:id="@+id/user_profile_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/user_profile_gender"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="12dp"
+                android:text="99"
+                android:textColor="#fff"
+                android:textSize="14sp" />
+
+
 
         </RelativeLayout>
 
@@ -84,23 +96,16 @@
             android:layout_marginTop="5dp"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/buttonSend"
-                android:layout_width="160dp"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:background="@color/common_google_signin_btn_text_dark_default"
-                android:text="@string/send_message" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/button_Edit"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
-                android:background="@color/common_google_signin_btn_text_dark_default"
-                android:text="Edit Profile"
+                android:layout_alignStart="@+id/buttonSend"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="19dp"
-                android:layout_below="@+id/buttonSend"
-                android:layout_alignStart="@+id/buttonSend" />
+                android:background="@color/common_google_signin_btn_text_dark_default"
+                android:text="Edit Profile" />
 
 
 

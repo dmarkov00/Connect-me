@@ -39,7 +39,7 @@
             android:layout_marginBottom="-50dp"
             android:ems="10"
             android:inputType="phone"
-            android:text="Age" />
+            android:hint="Age" />
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -70,7 +70,7 @@
             android:layout_marginTop="16dp"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Name"
+            android:hint="Name"
             android:layout_below="@+id/user_profile_photo"
             android:layout_alignStart="@+id/textNumber"
             android:layout_centerHorizontal="true"/>
@@ -79,57 +79,60 @@
             android:id="@+id/textNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Number"
+            android:hint="Number"
             android:ems="10"
             android:inputType="phone"
             android:layout_marginTop="61dp"
             android:layout_below="@+id/textName"
             android:layout_centerHorizontal="true" />
 
-        <RadioButton
-            android:id="@+id/radioButtonMale"
-            android:layout_width="wrap_content"
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/radioGroup"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Male"
-            android:layout_marginTop="22dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="17dp"
             android:layout_below="@+id/textNumber"
-            android:layout_toStartOf="@+id/user_profile_photo" />
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="46dp">
+
+            <RadioButton
+                android:id="@+id/radioButtonMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/buttonUpdate"
+                android:layout_marginEnd="12dp"
+                android:layout_toStartOf="@+id/buttonUpdate"
+                android:text="Male" />
+
+            <RadioButton
+                android:id="@+id/radioButtonFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textNumber"
+
+                android:layout_toEndOf="@+id/radioButtonMale"
+                android:text="Female" />
+
+            <RadioButton
+                android:id="@+id/radioButtonOther"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/buttonUpdate"
+                android:layout_toEndOf="@+id/buttonUpdate"
+                android:text="Other" />
+
+
+        </RadioGroup>
 
         <Button
-            android:id="@+id/buttonSend"
+            android:id="@+id/buttonUpdate"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/radioButtonFemale"
+            android:layout_below="@+id/radioGroup"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="69dp"
+            android:layout_marginTop="60dp"
             android:background="@color/common_google_signin_btn_text_dark_default"
-            android:onClick="sendInfo"
-            android:text="@string/send_message" />
-
-        <RadioButton
-            android:id="@+id/radioButtonFemale"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/radioButtonMale"
-            android:layout_centerHorizontal="true"
-            android:text="Female"
-            />
-
-        <RadioButton
-            android:id="@+id/radioButtonOther"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/radioButtonFemale"
-            android:layout_marginStart="16dp"
-            android:layout_toEndOf="@+id/radioButtonFemale"
-            android:text="Other" />
-
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/radioButtonMale"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="22dp" />
+            android:text="Update" />
     </RelativeLayout>
 </ScrollView>
