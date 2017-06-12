@@ -142,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
 //                        // do something with the clicked item :D
-                        Log.v("test", position + " Begiging");
 
                         switch (position) {
                             case 1:
@@ -153,18 +152,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 break;
 
                             case 2:
-                                FragmentManager fragmentManager = getSupportFragmentManager();
-
-                                FiltersFragment filtersFragment = FiltersFragment.newInstance();
-
-                                filtersFragment.show(fragmentManager, "fragment_filters");
-                                Log.v("test", position + " From filter");
-
+                                showFiltersFragment();
                                 break;
                             case 3:
                                 // Statements
                                 break;
-                            default:                                 Log.v("test", position + " From default");
+                            default:
 
                         }
 
@@ -321,8 +314,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot u : dataSnapshot.getChildren()) {
 
+
                     AdditionalUserData additionalUserData = u.getValue(AdditionalUserData.class);
                     userIdAdditionalUserDataMap.put(u.getKey(), additionalUserData);
+                    Log.v("test", "iteration");
 
                     //just in case
                     userData.add(additionalUserData);
@@ -365,7 +360,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    private void showFiltersFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
+        FiltersFragment filtersFragment = FiltersFragment.newInstance();
+
+        filtersFragment.show(fragmentManager, "fragment_filters");
+    }
 //    public boolean onMarkerClick(final Marker marker) {
 //
 //        // Retrieve the data from the marker.
