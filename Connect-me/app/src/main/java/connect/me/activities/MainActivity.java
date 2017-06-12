@@ -55,13 +55,16 @@ import java.util.Map;
 
 import connect.me.R;
 import connect.me.databaseIntegration.models.AdditionalUserData;
+import connect.me.fragments.AboutFragment;
 import connect.me.fragments.EditProfileFragment;
 import connect.me.fragments.FiltersFragment;
 import connect.me.fragments.OwnProfileFragment;
 import connect.me.fragments.ProfileFragment;
+import connect.me.utilities.FilterHelpers;
 
 import static android.R.attr.fragment;
 import static android.R.attr.targetActivity;
+import static com.android.volley.Request.Method.HEAD;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener, FiltersFragment.OnFragmentInteractionListener  {
@@ -103,6 +106,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (googleServicesAvailable()) {
             Toast.makeText(this, "Great!", Toast.LENGTH_LONG).show();
             setContentView(R.layout.activity_main);
+      //      Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+       //     setSupportActionBar(toolbar);
             initMap();
         } else {
             //no Google Maps layout
@@ -128,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Drawer result = new DrawerBuilder()
                 .withActivity(this)
                 //     .withToolbar(toolbar)
-                //  .withRootView(R.id.drawer_layout)
+               //  .withRootView(R.id.drawer_layout)
                 .withAccountHeader(headerResult)
                 .withActionBarDrawerToggle(true)
                 .withTranslucentStatusBar(false)
@@ -143,21 +148,41 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
 //                        // do something with the clicked item :D
 
+                        Log.v("test", position + " Begiging");
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+
+
                         switch (position) {
+
                             case 1:
-//                                OwnProfileFragment fragment = new OwnProfileFragment();
-//                                fragmentManager.beginTransaction()
-//                                        .replace(R.id.mapFragment, fragment)
-//                                        .commit();
+                                for (Map.Entry<String, AdditionalUserData> entry : userIdAdditionalUserDataMap.entrySet()) {
+                                    AdditionalUserData additionalUserData = entry.getValue();
+                                    String currentUserId = entry.getKey();
+                                    Log.v("test", currentUserId);
+                                    Log.v("test", userId);
+
+
+
+//                                   if(currentUserId.equals(userId)){
+                                        OwnProfileFragment ownerFragment = OwnProfileFragment.newInstance(additionalUserData);
+                                        ownerFragment.show(fragmentManager, "fragment_profile_own");
+//
+//                                    }
+                                }
+
                                 break;
 
                             case 2:
-                                Log.v("test", "yoo");
 
                                 showFiltersFragment();
+
                                 break;
                             case 3:
                                 // Statements
+
+                                AboutFragment aboutFragment = AboutFragment.newInstance();
+
+                                aboutFragment.show(fragmentManager, "fragment_about");
                                 break;
                             default:
 
@@ -170,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 })
                 .build();
     }
+
 // region Map connection methods
 
 

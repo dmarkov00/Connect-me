@@ -7,6 +7,9 @@
     tools:context="connect.me.activities.MainActivity">
 
 
+
+
+
     <fragment
         android:id="@+id/fragment"
         android:name="connect.me.fragments.FiltersFragment"
@@ -21,6 +24,8 @@
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp"
         tools:ignore="MissingConstraints" />
+
+
 
 
 

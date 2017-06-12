@@ -14,8 +14,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -27,81 +30,86 @@ import connect.me.databaseIntegration.firebaseInteraction.Dispatcher;
 import connect.me.databaseIntegration.models.AdditionalUserData;
 
 import static android.R.attr.fragment;
+import static connect.me.R.id.radioButton;
+import static connect.me.R.id.radioGroup;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EditProfileFragment extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class EditProfileFragment extends DialogFragment {
 
     Spinner spinner;
-    // Create an ArrayAdapter using the string array and a default spinner layout
-    ArrayAdapter<CharSequence> adapter;
+
     private EditText etAge;
     private EditText etName;
     private EditText etPhoneNumber;
-    private Button bSubmit;
 
     private Dispatcher dispatcher;
-    private String spinnerSelectedItem;
+    private String etGender;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_edit_profile);
+    public EditProfileFragment() {
+        // Empty constructor is required for DialogFragment
+        // Make sure not to add arguments to the constructor
+        // Use `newInstance` instead as shown below
+    }
 
-        spinner = (Spinner) findViewById(R.id.spinner);
-        etAge = (EditText) findViewById(R.id.textAge);
-        etName = (EditText) findViewById(R.id.textName);
-        etPhoneNumber = (EditText) findViewById(R.id.textNumber);
-        bSubmit = (Button) findViewById(R.id.buttonSend);
+    public static EditProfileFragment newInstance() {
+        EditProfileFragment fragment = new EditProfileFragment();
 
+        return fragment;
+    }
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+   //     super.onCreate(savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         dispatcher = new Dispatcher();
 
 
+          etAge = (EditText) view.findViewById(R.id.textAge);
+          etName = (EditText) view.findViewById(R.id.textName);
+          etPhoneNumber = (EditText) view.findViewById(R.id.textNumber);
 
-        adapter  = ArrayAdapter.createFromResource(this, R.array.gender_array, android.R.layout.simple_spinner_dropdown_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+        RadioGroup rg = (RadioGroup) view.findViewById(R.id.radioGroup);
 
-
-        bSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UpdateUserData();
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch(checkedId){
+                    case R.id.radioButtonMale:
+                        // do operations specific to this selection
+                        etGender = "Male";
+                        break;
+                    case R.id.radioButtonFemale:
+                        // do operations specific to this selection
+                        etGender = "Female";
+                        break;
+                    case R.id.radioButtonOther:
+                        // do operations specific to this selection
+                        etGender = "Other";
+                        break;
+                }
             }
         });
 
-    }
+        Button bSubmit = (Button) view.findViewById(R.id.buttonUpdate);
+        bSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-//    public static EditProfileFragment newInstance(AdditionalUserData user) {
-//
-//        EditProfileFragment frag = new EditProfileFragment();
-//        Bundle args = new Bundle();
-//
-//        args.putParcelable("user", (Parcelable) user);
-//        frag.setArguments(args);
-//        return frag;
-//
-//    }
+                UpdateUserData();
+                startActivity(new Intent(getContext(), MainActivity.class));
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        spinnerSelectedItem =  (String) parent.getItemAtPosition(position);
+            }
+        });
+
+        return view;
 
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
     public void UpdateUserData(){
         String name = (String) etName.getText().toString();
         int age = Integer.parseInt(etAge.getText().toString());
         String phoneNumber = (String) etPhoneNumber.getText().toString();
-        dispatcher.assignAdditionalDataToUser(name,age,phoneNumber,spinnerSelectedItem);
+        dispatcher.assignAdditionalDataToUser(name,age,phoneNumber,etGender);
     }
    }
