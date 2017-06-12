@@ -55,6 +55,7 @@ import java.util.Map;
 
 import connect.me.R;
 import connect.me.databaseIntegration.models.AdditionalUserData;
+import connect.me.fragments.AboutFragment;
 import connect.me.fragments.EditProfileFragment;
 import connect.me.fragments.FiltersFragment;
 import connect.me.fragments.OwnProfileFragment;
@@ -186,6 +187,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 break;
                             case 3:
                                 // Statements
+
+                                AboutFragment aboutFragment = AboutFragment.newInstance();
+
+                                aboutFragment.show(fragmentManager, "fragment_about");
                                 break;
                             default:
 
