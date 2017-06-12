@@ -1,8 +1,10 @@
 package connect.me.utilities;
 
 import android.location.Location;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import connect.me.databaseIntegration.models.AdditionalUserData;
 
 /**
@@ -32,7 +34,7 @@ public class Filter {
     public HashMap<String, AdditionalUserData> genderFilter(HashMap<String, AdditionalUserData> userIdToAdditionalUserData, String gender) {
         for (Map.Entry<String, AdditionalUserData> entry : userIdToAdditionalUserData.entrySet()) {
             AdditionalUserData additionalUserData = entry.getValue();
-            if (additionalUserData.getGender() == gender) {
+            if (additionalUserData.getGender().equals(gender)) {
                 additionalUserData.setFiltered(true);
             }
         }

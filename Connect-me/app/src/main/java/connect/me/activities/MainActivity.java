@@ -56,10 +56,12 @@ import java.util.Map;
 import connect.me.R;
 import connect.me.databaseIntegration.models.AdditionalUserData;
 import connect.me.fragments.EditProfileFragment;
+import connect.me.fragments.FiltersFragment;
 import connect.me.fragments.OwnProfileFragment;
 import connect.me.fragments.ProfileFragment;
 
 import static android.R.attr.fragment;
+import static android.R.attr.targetActivity;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -98,13 +100,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName("Home");
 
 
-
         if (googleServicesAvailable()) {
             Toast.makeText(this, "Great!", Toast.LENGTH_LONG).show();
             setContentView(R.layout.activity_main);
             initMap();
-
-            ProfileFragment profileFragment;
         } else {
             //no Google Maps layout
         }
@@ -128,33 +127,55 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //create the drawer and remember the `Drawer` result object
         Drawer result = new DrawerBuilder()
                 .withActivity(this)
-           //     .withToolbar(toolbar)
-              //  .withRootView(R.id.drawer_layout)
+                //     .withToolbar(toolbar)
+                //  .withRootView(R.id.drawer_layout)
                 .withAccountHeader(headerResult)
                 .withActionBarDrawerToggle(true)
                 .withTranslucentStatusBar(false)
                 .addDrawerItems(
                         new PrimaryDrawerItem().withIdentifier(1).withName("My Profile"),
-                        new SecondaryDrawerItem().withIdentifier(2).withName("About")
+                        new PrimaryDrawerItem().withIdentifier(2).withName("Filter people"),
+                        new SecondaryDrawerItem().withIdentifier(3).withName("About")
 
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
 //                        // do something with the clicked item :D
+                        Log.v("test", position + " Begiging");
 
-                        OwnProfileFragment fragment = new OwnProfileFragment();
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.mapFragment, fragment)
-                                .commit();
-                        return true;}
+                        switch (position) {
+                            case 1:
+//                                OwnProfileFragment fragment = new OwnProfileFragment();
+//                                fragmentManager.beginTransaction()
+//                                        .replace(R.id.mapFragment, fragment)
+//                                        .commit();
+                                break;
+
+                            case 2:
+                                FragmentManager fragmentManager = getSupportFragmentManager();
+
+                                FiltersFragment filtersFragment = FiltersFragment.newInstance();
+
+                                filtersFragment.show(fragmentManager, "fragment_filters");
+                                Log.v("test", position + " From filter");
+
+                                break;
+                            case 3:
+                                // Statements
+                                break;
+                            default:                                 Log.v("test", position + " From default");
+
+                        }
+
+
+                        return true;
+                    }
 
                 })
                 .build();
     }
 // region Map connection methods
-
 
 
     //retrieving the map fragment
@@ -301,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 for (DataSnapshot u : dataSnapshot.getChildren()) {
 
                     AdditionalUserData additionalUserData = u.getValue(AdditionalUserData.class);
-                    userIdAdditionalUserDataMap.put(u.getKey(),additionalUserData);
+                    userIdAdditionalUserDataMap.put(u.getKey(), additionalUserData);
 
                     //just in case
                     userData.add(additionalUserData);
@@ -343,10 +364,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
     }
-
-
-
-
 
 
 //    public boolean onMarkerClick(final Marker marker) {
