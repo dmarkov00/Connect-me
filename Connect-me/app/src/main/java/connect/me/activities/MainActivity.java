@@ -64,7 +64,7 @@ import static android.R.attr.fragment;
 import static android.R.attr.targetActivity;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, FiltersFragment.OnFragmentInteractionListener  {
 
 
     GoogleMap mGoogleMap;
@@ -152,6 +152,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 break;
 
                             case 2:
+                                Log.v("test", "yoo");
+
                                 showFiltersFragment();
                                 break;
                             case 3:
@@ -362,11 +364,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void showFiltersFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
+        Log.v("test", "before");
 
         FiltersFragment filtersFragment = FiltersFragment.newInstance();
 
         filtersFragment.show(fragmentManager, "fragment_filters");
     }
+
+    @Override
+    public void onFragmentInteraction(String gender, float distance, int age) {
+        Log.v("data", gender);
+
+    }
+
+
 //    public boolean onMarkerClick(final Marker marker) {
 //
 //        // Retrieve the data from the marker.
