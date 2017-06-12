@@ -1,4 +1,5 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,26 +7,32 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="18dp"
-        android:text="Filter by distance"
-        android:textSize="24dp" />
+    <!--<TextView-->
+        <!--android:id="@+id/textView2"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:text="Filter by distance in meters"-->
+        <!--android:textSize="24dp"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--tools:layout_constraintLeft_creator="1"-->
+        <!--tools:layout_constraintRight_creator="1"-->
+        <!--tools:layout_constraintTop_creator="1"-->
+        <!--tools:layout_editor_absoluteX="16dp" />-->
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/distanceSeekBar"
-        android:layout_below="@+id/distanceSeekBar"
-        android:layout_marginTop="49dp"
         android:text="Filter by gender"
-        android:textSize="24dp" />
+        android:textSize="24dp"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/genderRadioGroup"
+        android:layout_marginStart="28dp"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="41dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="8dp" />
 
     <TextView
         android:id="@+id/textView4"
@@ -33,34 +40,65 @@
         android:layout_height="wrap_content"
         android:text="Filter by age"
         android:textSize="24dp"
-        android:layout_centerVertical="true"
-        android:layout_alignStart="@+id/genderRadioGroup" />
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="49dp"
+        app:layout_constraintTop_toBottomOf="@+id/genderRadioGroup"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="28dp" />
 
-    <SeekBar
-        android:id="@+id/distanceSeekBar"
+    <EditText
+        android:id="@+id/ageEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_below="@+id/textView2"
-        android:layout_alignStart="@+id/textView2"
-        android:layout_alignEnd="@+id/textView2" />
+        android:ems="10"
+        android:text="Age"
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="49dp"
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="28dp"
+        android:inputType="number"/>
+
+    <Button
+        android:id="@+id/applyFiltersButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Apply filters"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        android:layout_marginStart="119dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="81dp"
+        app:layout_constraintTop_toBottomOf="@+id/ageEditText"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="79dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="107dp"
+        app:layout_constraintVertical_bias="0.441" />
 
     <RadioGroup
         android:id="@+id/genderRadioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignStart="@+id/textView3"
-        android:layout_below="@+id/textView3"
-        android:layout_centerHorizontal="false"
-        android:orientation="horizontal"
-        android:layout_marginTop="32dp"
+        android:layout_marginRight="131dp"
 
-        android:scrollbarAlwaysDrawHorizontalTrack="false">
+        android:layout_marginTop="200dp"
+        android:orientation="horizontal"
+        android:scrollbarAlwaysDrawHorizontalTrack="false"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent">
 
         <RadioButton
             android:id="@+id/radioButton3"
-            android:layout_width="87dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/textView3"
             android:layout_below="@+id/genderRadioGroup"
@@ -78,29 +116,19 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignTop="@+id/radioButton3"
-            android:layout_weight="0.58"
+            android:layout_weight="0.07"
             android:text="Male" />
 
     </RadioGroup>
 
     <EditText
-        android:id="@+id/ageEditText"
+        android:id="@+id/editText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Age"
-        android:layout_below="@+id/textView4"
-        android:layout_alignStart="@+id/textView4"
-        android:layout_marginTop="20dp" />
-
-    <Button
-        android:id="@+id/applyFiltersButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/ageEditText"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="79dp"
-        android:text="Apply filters" />
-
-</RelativeLayout>
+        android:text="Distance"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="63dp"
+        android:inputType="number"
+        />
+</android.support.constraint.ConstraintLayout>

@@ -63,6 +63,7 @@ import connect.me.utilities.FilterHelpers;
 
 import static android.R.attr.fragment;
 import static android.R.attr.targetActivity;
+import static com.android.volley.Request.Method.HEAD;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -145,8 +146,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
 //                        // do something with the clicked item :D
+
                         Log.v("test", position + " Begiging");
                         FragmentManager fragmentManager = getSupportFragmentManager();
+
 
                         switch (position) {
 
@@ -162,9 +165,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                                   if(currentUserId.equals(userId)){
                                         OwnProfileFragment ownerFragment = OwnProfileFragment.newInstance(additionalUserData);
                                         ownerFragment.show(fragmentManager, "fragment_profile_own");
-//                                        fragmentManager.beginTransaction()
-//                                        .replace(R.id.mapFragment, ownerFragment)
-//                                        .commit();
+//
 //                                    }
                                 }
 
@@ -173,16 +174,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             case 2:
 
 
+
                                 FiltersFragment filtersFragment = FiltersFragment.newInstance();
 
                                 filtersFragment.show(fragmentManager, "fragment_filters");
                                 Log.v("test", position + " From filter");
 
+
+                                showFiltersFragment();
+
                                 break;
                             case 3:
                                 // Statements
                                 break;
-                            default:                                 Log.v("test", position + " From default");
+                            default:
 
                         }
 
@@ -340,8 +345,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot u : dataSnapshot.getChildren()) {
 
+
                     AdditionalUserData additionalUserData = u.getValue(AdditionalUserData.class);
                     userIdAdditionalUserDataMap.put(u.getKey(), additionalUserData);
+                    Log.v("test", "iteration");
 
                     //just in case
                     userData.add(additionalUserData);
@@ -384,7 +391,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    private void showFiltersFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
+        FiltersFragment filtersFragment = FiltersFragment.newInstance();
+
+        filtersFragment.show(fragmentManager, "fragment_filters");
+    }
 //    public boolean onMarkerClick(final Marker marker) {
 //
 //        // Retrieve the data from the marker.
