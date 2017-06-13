@@ -67,7 +67,7 @@ import static android.R.attr.targetActivity;
 import static com.android.volley.Request.Method.HEAD;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener, FiltersFragment.OnFragmentInteractionListener  {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, FiltersFragment.OnFragmentInteractionListener {
 
 
     GoogleMap mGoogleMap;
@@ -106,8 +106,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (googleServicesAvailable()) {
             Toast.makeText(this, "Great!", Toast.LENGTH_LONG).show();
             setContentView(R.layout.activity_main);
-      //      Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-       //     setSupportActionBar(toolbar);
+            //      Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            //     setSupportActionBar(toolbar);
             initMap();
         } else {
             //no Google Maps layout
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Drawer result = new DrawerBuilder()
                 .withActivity(this)
                 //     .withToolbar(toolbar)
-               //  .withRootView(R.id.drawer_layout)
+                //  .withRootView(R.id.drawer_layout)
                 .withAccountHeader(headerResult)
                 .withActionBarDrawerToggle(true)
                 .withTranslucentStatusBar(false)
@@ -162,10 +162,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     Log.v("test", userId);
 
 
-
 //                                   if(currentUserId.equals(userId)){
-                                        OwnProfileFragment ownerFragment = OwnProfileFragment.newInstance(additionalUserData);
-                                        ownerFragment.show(fragmentManager, "fragment_profile_own");
+                                    OwnProfileFragment ownerFragment = OwnProfileFragment.newInstance(additionalUserData);
+                                    ownerFragment.show(fragmentManager, "fragment_profile_own");
 //
 //                                    }
                                 }
@@ -363,6 +362,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 userId = firebaseAuth.getCurrentUser().getUid();
             }
         });
+    }
+
+    private AdditionalUserData getCurrentlyLoggedInUser() {
+        for (Map.Entry<String, AdditionalUserData> entry : userIdAdditionalUserDataMap.entrySet()) {
+            AdditionalUserData additionalUserData = entry.getValue();
+            String currentUserId = entry.getKey();
+
+            if (currentUserId.equals(userId)) {
+
+                return additionalUserData;
+            }
+        }
+        return null;
     }
 
     // region Test logic
