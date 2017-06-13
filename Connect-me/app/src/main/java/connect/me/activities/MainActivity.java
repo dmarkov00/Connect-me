@@ -52,9 +52,10 @@ import connect.me.databaseIntegration.models.AdditionalUserData;
 import connect.me.fragments.AboutFragment;
 import connect.me.fragments.FiltersFragment;
 import connect.me.fragments.OwnProfileFragment;
+import connect.me.fragments.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener, FiltersFragment.OnFragmentInteractionListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, FiltersFragment.OnFragmentInteractionListener,GoogleMap.OnMarkerClickListener {
 
 
     GoogleMap mGoogleMap;
@@ -268,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //connecting the client
         getUsers();
         mGoogleApiClient.connect();
+        googleMap.setOnMarkerClickListener(this);
     }
 
 
@@ -315,37 +317,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.v("data", gender);
 
     }
-    // region Test logic
 
 
+    public boolean onMarkerClick(final Marker marker) {
 
+        // Retrieve the data from the marker.
+        String userIdFromMarker = (String) marker.getTitle();
+        for (Map.Entry<String, AdditionalUserData> entry : userIdAdditionalUserDataMap.entrySet()) {
+            AdditionalUserData additionalUserData = entry.getValue();
+            String currentUserId = entry.getKey();
 
-//    public boolean onMarkerClick(final Marker marker) {
-//
-//        // Retrieve the data from the marker.
-//        String userId = (String) marker.getTag();
-//        for (TestUser user : listOfUsers) {
-//            if (userId == user.id) {
-//                FragmentManager fm = getSupportFragmentManager();
-//                // We can pass the from the selected person and retrieve him from the database
-//                ProfileFragment profileFragment = ProfileFragment.newInstance(user);
-//                profileFragment.show(fm, "fragment_profile");
-//
-//                //////////////////////////////////
-//                Toast.makeText(this,
-//                        user.name + " " + user.id,
-//                        Toast.LENGTH_SHORT).show();
-//                return true;
-//            }
-//        }
-//
-//
-//        // Return false to indicate that we have not consumed the event and that we wish
-//        // for the default behavior to occur (which is for the camera to move such that the
-//        // marker is centered and for the marker's info window to open, if it has one).
-//        return false;
-//    }
-//endregion
+            if (userIdFromMarker.equals(currentUserId)) {
+
+                FragmentManager fm = getSupportFragmentManager();
+                // We can pass the from the selected person and retrieve him from the database
+                ProfileFragment profileFragment = ProfileFragment.newInstance(additionalUserData);
+                profileFragment.show(fm, "fragment_profile");
+                return true;
+
+            }
+        }
+
+        // Return false to indicate that we have not consumed the event and that we wish
+        // for the default behavior to occur (which is for the camera to move such that the
+        // marker is centered and for the marker's info window to open, if it has one).
+        return false;
+    }
+
 
 
 }
