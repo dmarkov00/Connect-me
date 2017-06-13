@@ -15,7 +15,7 @@ public class Helpers {
 
     public static Location convertToLocation(double longitude, double latitude) {
         Location location = new Location("");
-        location.setLatitude(longitude);
+        location.setLongitude(longitude);
         location.setLatitude(latitude);
         return location;
     }
