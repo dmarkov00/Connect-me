@@ -1,7 +1,6 @@
 package connect.me.activities;
 
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -10,10 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -22,8 +19,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,7 +36,6 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
@@ -56,15 +50,8 @@ import java.util.Map;
 import connect.me.R;
 import connect.me.databaseIntegration.models.AdditionalUserData;
 import connect.me.fragments.AboutFragment;
-import connect.me.fragments.EditProfileFragment;
 import connect.me.fragments.FiltersFragment;
 import connect.me.fragments.OwnProfileFragment;
-import connect.me.fragments.ProfileFragment;
-import connect.me.utilities.FilterHelpers;
-
-import static android.R.attr.fragment;
-import static android.R.attr.targetActivity;
-import static com.android.volley.Request.Method.HEAD;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener, FiltersFragment.OnFragmentInteractionListener {
@@ -80,7 +67,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<AdditionalUserData> userData;
     private String username;
     private String email;
-    private Location currentLoggedInUserLocation;
+
+    //used to store all the users and maps user id to additionalUserData object
     private HashMap<String, AdditionalUserData> userIdAdditionalUserDataMap = new HashMap<>();
 
 
@@ -97,19 +85,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         username = firebaseAuth.getCurrentUser().getDisplayName();
         email = firebaseAuth.getCurrentUser().getEmail();
 
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-
-        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName("Home");
-
-
-        if (googleServicesAvailable()) {
-            Toast.makeText(this, "Great!", Toast.LENGTH_LONG).show();
-            setContentView(R.layout.activity_main);
-            //      Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            //     setSupportActionBar(toolbar);
+       if (googleServicesAvailable()) {
+           setContentView(R.layout.activity_main);
             initMap();
-        } else {
+        }
+
+        else {
             //no Google Maps layout
         }
 
@@ -129,11 +110,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 })
                 .build();
 
-//create the drawer and remember the `Drawer` result object
-        Drawer result = new DrawerBuilder()
+        //create the drawer and remember the `Drawer` result object
+          new DrawerBuilder()
                 .withActivity(this)
-                //     .withToolbar(toolbar)
-                //  .withRootView(R.id.drawer_layout)
                 .withAccountHeader(headerResult)
                 .withActionBarDrawerToggle(true)
                 .withTranslucentStatusBar(false)
@@ -146,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-//                        // do something with the clicked item :D
 
                         Log.v("test", position + " Begiging");
                         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -161,33 +139,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     Log.v("test", currentUserId);
                                     Log.v("test", userId);
 
-
-//                                   if(currentUserId.equals(userId)){
                                     OwnProfileFragment ownerFragment = OwnProfileFragment.newInstance(additionalUserData);
                                     ownerFragment.show(fragmentManager, "fragment_profile_own");
-//
-//                                    }
                                 }
-
                                 break;
-
                             case 2:
-
                                 showFiltersFragment();
-
                                 break;
                             case 3:
                                 // Statements
-
                                 AboutFragment aboutFragment = AboutFragment.newInstance();
-
                                 aboutFragment.show(fragmentManager, "fragment_about");
                                 break;
                             default:
-
                         }
-
-
                         return true;
                     }
 
@@ -196,8 +161,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 // region Map connection methods
-
-
     //retrieving the map fragment
     private void initMap() {
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment);
@@ -266,41 +229,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             LatLng ll = new LatLng(location.getLatitude(), location.getLongitude()); //getting the current location
             // Getting location for use in other methods
-            currentLoggedInUserLocation = location;
             mDatabase.child(userId).child("latitude").setValue(ll.latitude);
             mDatabase.child(userId).child("longitude").setValue(ll.longitude);
-            //placeMarker(new LatLng(ll.latitude,ll.longitude),"");
-
-            //CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, 15);
-
-            //mGoogleMap.animateCamera(update);
-        }
+            }
 
     }
 
     public void placeMarker(LatLng ll, String key) {
-//        //check if the marker exists
-//        if (myMarker != null) {
-//            myMarker.remove(); //removes the previous current location
-//        }
-//        Log.e("KEYS",firebaseAuth.getCurrentUser().getUid());
-//        Log.e("KEY-S",key);
         if (firebaseAuth.getCurrentUser().getUid().equals(key)) {
 
             for (Marker m : markersList) {
-//                Log.e("KEY 1",key);
-//                Log.e("KEY 2",m.getTitle());
                 if (m.getTitle().equals(key)) {
-
                     m.remove(); //removes the previous current location
-                    //Log.e("REM","OVED");
-                }
+                 }
             }
 
         }
+        MarkerOptions options;
 
         //adding a marker
-        MarkerOptions options = new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).title(key);
+        if (userId.equals(key)) {
+            options = new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(key);
+
+        } else {
+            options = new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).title(key);
+        }
         myMarker = mGoogleMap.addMarker(options);
         markersList.add(myMarker);
     }
@@ -321,18 +274,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //connecting the client
         getUsers();
         mGoogleApiClient.connect();
-
-
-//        testMethodPopulateWithMarkers(googleMap);
     }
 
-
-    //method that brings us to a specific location
-    private void goToLocation(double lat, double lng) {
-        LatLng ll = new LatLng(lat, lng);
-        CameraUpdate update = CameraUpdateFactory.newLatLng(ll);
-        mGoogleMap.moveCamera(update);
-    }
 
     private void getUsers() {
 
