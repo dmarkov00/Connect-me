@@ -36,8 +36,6 @@ public class OwnProfileFragment extends DialogFragment {
         OwnProfileFragment frag = new OwnProfileFragment();
         Bundle args = new Bundle();
 
-
-
         args.putParcelable("user", (Parcelable) user);
         frag.setArguments(args);
         return frag;

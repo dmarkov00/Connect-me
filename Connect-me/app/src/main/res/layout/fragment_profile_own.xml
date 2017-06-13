@@ -101,23 +101,10 @@
                 android:id="@+id/button_Edit"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/buttonSend"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="19dp"
                 android:background="@color/common_google_signin_btn_text_dark_default"
                 android:text="Edit Profile" />
-
-
-
-            <!--<TextView-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_margin="5dp"-->
-            <!--android:background="#fff"-->
-            <!--android:clickable="true"-->
-            <!--android:elevation="4dp"-->
-            <!--android:padding="20dp"-->
-            <!--android:text="Send message" />-->
 
 
         </RelativeLayout>
