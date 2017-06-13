@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FirebaseAuth firebaseAuth;
     private String userId;
     private DatabaseReference mDatabase;
-    private List<AdditionalUserData> userData;
     private String username;
     private String email;
 
@@ -78,19 +77,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("additionalUserData");
-        userData = new ArrayList<>();
         firebaseAuth = FirebaseAuth.getInstance();
         markersList = new ArrayList<>();
         userId = firebaseAuth.getCurrentUser().getUid();
         username = firebaseAuth.getCurrentUser().getDisplayName();
         email = firebaseAuth.getCurrentUser().getEmail();
 
-       if (googleServicesAvailable()) {
-           setContentView(R.layout.activity_main);
+        if (googleServicesAvailable()) {
+            setContentView(R.layout.activity_main);
             initMap();
-        }
-
-        else {
+        } else {
             //no Google Maps layout
         }
 
@@ -111,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .build();
 
         //create the drawer and remember the `Drawer` result object
-          new DrawerBuilder()
+        new DrawerBuilder()
                 .withActivity(this)
                 .withAccountHeader(headerResult)
                 .withActionBarDrawerToggle(true)
@@ -126,25 +122,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
 
-                        Log.v("test", position + " Begiging");
+                        // Fragment manager used for displaying the different fragments
                         FragmentManager fragmentManager = getSupportFragmentManager();
-
 
                         switch (position) {
 
                             case 1:
-                                for (Map.Entry<String, AdditionalUserData> entry : userIdAdditionalUserDataMap.entrySet()) {
-                                    AdditionalUserData additionalUserData = entry.getValue();
-                                    String currentUserId = entry.getKey();
-                                    Log.v("test", currentUserId);
-                                    Log.v("test", userId);
+                                // Retrieving the data of the logged in user
+                                AdditionalUserData additionalUserData = getCurrentlyLoggedInUserAdditionalData();
 
-                                    OwnProfileFragment ownerFragment = OwnProfileFragment.newInstance(additionalUserData);
-                                    ownerFragment.show(fragmentManager, "fragment_profile_own");
-                                }
+                                // Displaying the fragment with the correct data
+                                OwnProfileFragment ownerFragment = OwnProfileFragment.newInstance(additionalUserData);
+                                ownerFragment.show(fragmentManager, "fragment_profile_own");
                                 break;
                             case 2:
-                                showFiltersFragment();
+                                // Displaying the filter fragment
+                                FiltersFragment filtersFragment = FiltersFragment.newInstance();
+                                filtersFragment.show(fragmentManager, "fragment_filters");
                                 break;
                             case 3:
                                 // Statements
@@ -160,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .build();
     }
 
-// region Map connection methods
+    // region Map connection methods
     //retrieving the map fragment
     private void initMap() {
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapFragment);
@@ -231,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             // Getting location for use in other methods
             mDatabase.child(userId).child("latitude").setValue(ll.latitude);
             mDatabase.child(userId).child("longitude").setValue(ll.longitude);
-            }
+        }
 
     }
 
@@ -241,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             for (Marker m : markersList) {
                 if (m.getTitle().equals(key)) {
                     m.remove(); //removes the previous current location
-                 }
+                }
             }
 
         }
@@ -284,20 +278,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot u : dataSnapshot.getChildren()) {
 
-
+                    // Retrieving data per user
                     AdditionalUserData additionalUserData = u.getValue(AdditionalUserData.class);
-                    userIdAdditionalUserDataMap.put(u.getKey(), additionalUserData);
-                    Log.v("test", "iteration");
 
-                    //just in case
-                    userData.add(additionalUserData);
-                    Log.e("LOCATION", additionalUserData.getLatitude() + "-" + additionalUserData.getLongitude());
+                    // Filling up the hashmap with values for later use
+                    userIdAdditionalUserDataMap.put(u.getKey(), additionalUserData);
+
                     if (additionalUserData.getLongitude() == 0 || additionalUserData.getLatitude() == 0) {
                         return;
                     }
                     placeMarker(new LatLng(additionalUserData.getLatitude(), additionalUserData.getLongitude()), u.getKey());
                 }
-
             }
 
             @Override
@@ -307,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-    private AdditionalUserData getCurrentlyLoggedInUser() {
+    private AdditionalUserData getCurrentlyLoggedInUserAdditionalData() {
         for (Map.Entry<String, AdditionalUserData> entry : userIdAdditionalUserDataMap.entrySet()) {
             AdditionalUserData additionalUserData = entry.getValue();
             String currentUserId = entry.getKey();
@@ -319,44 +310,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return null;
     }
-
-    // region Test logic
-    private void testMethodPopulateWithMarkers(GoogleMap map) {
-
-
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(12, 12))
-                .title("gancho"))
-                .setTag(1);
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(12, 13))
-                .title("pancho"))
-                .setTag(1);
-        float[] results = new float[1];
-        Location.distanceBetween(12, 12, 12, 13, results);
-        for (float result : results) {
-            Toast.makeText(this,
-                    result + "",
-                    Toast.LENGTH_SHORT).show();
-
-
-        }
-    }
-
-    private void showFiltersFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Log.v("test", "before");
-
-        FiltersFragment filtersFragment = FiltersFragment.newInstance();
-
-        filtersFragment.show(fragmentManager, "fragment_filters");
-    }
-
     @Override
     public void onFragmentInteraction(String gender, float distance, int age) {
         Log.v("data", gender);
 
     }
+    // region Test logic
+
+
 
 
 //    public boolean onMarkerClick(final Marker marker) {

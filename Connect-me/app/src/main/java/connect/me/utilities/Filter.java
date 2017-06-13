@@ -17,8 +17,8 @@ public class Filter {
 
         for (Map.Entry<String, AdditionalUserData> entry : userIdToAdditionalUserData.entrySet()) {
             AdditionalUserData additionalUserData = entry.getValue();
-            Location peerUserLocation = FilterHelpers.convertToLocation(additionalUserData.getLongitude(), additionalUserData.getLatitude());
-            float calculatedDistance = FilterHelpers.getDistanceBetweenLocations(currentlyLoggedInUser, peerUserLocation);
+            Location peerUserLocation = Helpers.convertToLocation(additionalUserData.getLongitude(), additionalUserData.getLatitude());
+            float calculatedDistance = Helpers.getDistanceBetweenLocations(currentlyLoggedInUser, peerUserLocation);
 
             if (calculatedDistance > distanceFilterValue) {
                 additionalUserData.setFiltered(true);

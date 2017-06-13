@@ -6,7 +6,7 @@ import android.location.Location;
  * Created by markovv on 11-Jun-17.
  */
 
-public class FilterHelpers {
+public class Helpers {
 
     public static float getDistanceBetweenLocations(Location first, Location second) {
 
