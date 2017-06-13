@@ -31,12 +31,12 @@ public class ProfileFragment extends DialogFragment {
 
     }
 
-    public static ProfileFragment newInstance(AdditionalUserData user) {
+    public static ProfileFragment newInstance(AdditionalUserData additionalUserData) {
 
         ProfileFragment frag = new ProfileFragment();
         Bundle args = new Bundle();
 
-        args.putParcelable("user", (Parcelable) user);
+        args.putParcelable("additionalUserData", additionalUserData);
         frag.setArguments(args);
         return frag;
 
@@ -56,17 +56,17 @@ public class ProfileFragment extends DialogFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        AdditionalUserData user = getArguments().getParcelable("user");
+        AdditionalUserData additionalUserData = getArguments().getParcelable("additionalUserData");
 
         TextView nameTextView = (TextView) view.findViewById(R.id.user_profile_name);
         TextView phoneTextView = (TextView) view.findViewById(R.id.user_profile_phone_number);
         TextView genderTextView = (TextView) view.findViewById(R.id.user_profile_gender);
         TextView ageTextView = (TextView) view.findViewById(R.id.user_profile_age);
 
-        nameTextView.setText(user.getName());
-        phoneTextView.setText("Phone: " + user.getPhoneNumber());
-        genderTextView.setText("Sex: " + user.getGender());
-        ageTextView.setText("Age: "+ user.getAge()+"");
+        nameTextView.setText(additionalUserData.getName());
+        phoneTextView.setText("Phone: " + additionalUserData.getPhoneNumber());
+        genderTextView.setText("Sex: " + additionalUserData.getGender());
+        ageTextView.setText("Age: "+ additionalUserData.getAge()+"");
 
     }
 
