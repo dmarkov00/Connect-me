@@ -56,6 +56,7 @@ import connect.me.databaseIntegration.models.AdditionalUserData;
 import connect.me.fragments.AboutFragment;
 import connect.me.fragments.FiltersFragment;
 import connect.me.fragments.OwnProfileFragment;
+import connect.me.fragments.ProfileFragment;
 import connect.me.utilities.Helpers;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
