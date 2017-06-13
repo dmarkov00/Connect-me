@@ -238,8 +238,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 distanceBetweenUsers = Helpers.getDistanceBetweenLocations(location,locationOfOthers);
                 if(distanceBetweenUsers < 10)
                 {
-//                    Vibrator v = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
-//                    v.vibrate(1000);
+                    Vibrator v = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(1000);
                     NotificationCompat.Builder mBuilder =
                             new NotificationCompat.Builder(MainActivity.this)
                                     .setSmallIcon(R.drawable.notification)
