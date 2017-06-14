@@ -53,9 +53,10 @@ import connect.me.fragments.AboutFragment;
 import connect.me.fragments.FiltersFragment;
 import connect.me.fragments.OwnProfileFragment;
 import connect.me.fragments.ProfileFragment;
+import connect.me.utilities.Filter;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener, FiltersFragment.OnFragmentInteractionListener,GoogleMap.OnMarkerClickListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, FiltersFragment.OnFragmentInteractionListener, GoogleMap.OnMarkerClickListener {
 
 
     GoogleMap mGoogleMap;
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DatabaseReference mDatabase;
     private String username;
     private String email;
-
+    private Location currentLoggedInUserLocation;
     //used to store all the users and maps user id to additionalUserData object
     private HashMap<String, AdditionalUserData> userIdAdditionalUserDataMap = new HashMap<>();
 
@@ -222,6 +223,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (location == null) {
             Toast.makeText(this, "Cannot get current location", Toast.LENGTH_LONG).show();
         } else {
+            // Getting user location for later use in distance filter
+            currentLoggedInUserLocation = location;
             LatLng ll = new LatLng(location.getLatitude(), location.getLongitude()); //getting the current location
             // Getting location for use in other methods
             mDatabase.child(userId).child("latitude").setValue(ll.latitude);
@@ -236,6 +239,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             for (Marker m : markersList) {
                 if (m.getTitle().equals(key)) {
                     m.remove(); //removes the previous current location
+                    markersList.remove(m);
                 }
             }
 
@@ -312,12 +316,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return null;
     }
+
     @Override
     public void onFragmentInteraction(String gender, float distance, int age) {
         Log.v("data", gender);
-
+        HashMap<String, AdditionalUserData> filterResult = Filter.applyFilters(userIdAdditionalUserDataMap, currentLoggedInUserLocation, gender, distance, age);
+        hideFilteredMarkers(filterResult);
     }
 
+    private void hideFilteredMarkers(HashMap<String, AdditionalUserData> listOfFilteredUsers) {
+
+        for (Map.Entry<String, AdditionalUserData> entry : listOfFilteredUsers.entrySet()) {
+            AdditionalUserData additionalUserData = entry.getValue();
+            String userFromFilteredResult = entry.getKey();
+
+            for (Marker m : markersList) {
+                if (m.getTitle().equals(userFromFilteredResult) && additionalUserData.isFiltered()) {
+                    m.setVisible(false);
+                }
+            }
+        }
+    }
 
     public boolean onMarkerClick(final Marker marker) {
 
@@ -343,7 +362,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // marker is centered and for the marker's info window to open, if it has one).
         return false;
     }
-
 
 
 }
