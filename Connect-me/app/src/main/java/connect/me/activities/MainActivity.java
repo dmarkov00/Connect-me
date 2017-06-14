@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(this, "Cannot get current location", Toast.LENGTH_LONG).show();
             return;
         }
-        myLocation=location;
+        myLocation = location;
 
         LatLng ll = new LatLng(location.getLatitude(), location.getLongitude()); //getting the current location
         // Getting location for use in other methods
@@ -254,6 +254,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         MarkerOptions options;
 
+
         //adding a marker
         if (userId.equals(key)) {
             options = new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(key);
@@ -261,6 +262,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             options = new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).title(key);
         }
+
+
+        for (Marker m : markersList) {
+            if (m.getTitle().equals(options.getTitle())) {
+                markersList.remove(m);
+                break;
+            }
+        }
+
+
         myMarker = mGoogleMap.addMarker(options);
         markersList.add(myMarker);
     }
@@ -295,9 +306,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     Location locationOfOthers = Helpers.convertToLocation(u.child("longitude").getValue(Double.class), u.child("latitude").getValue(Double.class));
 
-                    if(myLocation != null && u.getKey() != userId) {
-                        Log.v("theKey",u.getKey());
-                        Log.v("iserId",userId);
+                    if (myLocation != null && u.getKey() != userId) {
+                        Log.v("theKey", u.getKey());
+                        Log.v("iserId", userId);
 
                         distanceBetweenUsers = Helpers.getDistanceBetweenLocations(myLocation, locationOfOthers);
                     }
@@ -306,10 +317,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     userIdAdditionalUserDataMap.put(u.getKey(), additionalUserData);
                     if (distanceBetweenUsers < 10) {
 
-                        if(u.getKey().equals(userId)){
+                        if (u.getKey().equals(userId)) {
                             vibration = false;
-                        }
-                        else{
+                        } else {
                             vibration = true;
                             NotificationCompat.Builder mBuilder =
                                     new NotificationCompat.Builder(MainActivity.this)
@@ -323,15 +333,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     if (additionalUserData != null && additionalUserData.getLongitude() != 0 && additionalUserData.getLatitude() != 0) {
                         placeMarker(new LatLng(additionalUserData.getLatitude(), additionalUserData.getLongitude()), u.getKey());
-                                Log.v("trali","ffffff");
+                        Log.v("trali", "ffffff");
                     }
                 }
                 Vibrator v = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
 
-                if(vibration){
+                if (vibration) {
                     v.vibrate(1000);
-                }
-                else{
+                } else {
                     v.cancel();
                 }
             }
@@ -359,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onFragmentInteraction(String gender, float distance, int age) {
 
-        HashMap<String, AdditionalUserData> filterResult = Filter.applyFilters(userIdAdditionalUserDataMap, currentLoggedInUserLocation, gender, distance, age);
+        HashMap<String, AdditionalUserData> filterResult = Filter.applyFilters(userIdAdditionalUserDataMap, myLocation, gender, distance, age);
         hideFilteredMarkers(filterResult);
     }
 

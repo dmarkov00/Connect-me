@@ -2,6 +2,7 @@ package connect.me.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import connect.me.R;
+import connect.me.activities.MainActivity;
 
 
 public class FiltersFragment extends DialogFragment {
@@ -23,20 +25,21 @@ public class FiltersFragment extends DialogFragment {
     private EditText distanceEditText;
     private RadioGroup genderRadioGroup;
     private RadioButton genderRadioButton;
+    private String etGender;
 
     public FiltersFragment() {
         // Required empty public constructor
     }
 
-    public void sendDataToActivity(String gender,float distance, int age) {
+    public void sendDataToActivity(String gender, float distance, int age) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(gender,distance,age);
+            mListener.onFragmentInteraction(gender, distance, age);
         }
     }
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(String gender,float distance, int age);
+        void onFragmentInteraction(String gender, float distance, int age);
     }
 
     // region some setters and removers
@@ -71,19 +74,40 @@ public class FiltersFragment extends DialogFragment {
         ageEditText = (EditText) view.findViewById(R.id.ageEditText);
         distanceEditText = (EditText) view.findViewById(R.id.distanceEditText);
         genderRadioGroup = (RadioGroup) view.findViewById(R.id.genderRadioGroup);
+        // Setting radio button to be checked by default
+        ((RadioButton) genderRadioGroup.getChildAt(0)).setChecked(true);
 
+        genderRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.radioButtonMale:
+                        // do operations specific to this selection
+                        etGender = "Male";
+                        break;
+                    case R.id.radioButtonFemale:
+                        // do operations specific to this selection
+                        etGender = "Female";
+                        break;
+                    case R.id.radioButtonOther:
+                        // do operations specific to this selection
+                        etGender = "Other";
+                        break;
+                }
+            }
+        });
 
         Button applyFiltersButton = (Button) view.findViewById(R.id.applyFiltersButton);
         applyFiltersButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v ) {
-                int selectedId = genderRadioGroup.getCheckedRadioButtonId();
-                genderRadioButton = (RadioButton) v.findViewById(selectedId);
-                int age =  Integer.parseInt(ageEditText.getText().toString());
-                float distance = Float.parseFloat(distanceEditText.getText().toString());
-//                String gender = genderRadioButton.getText().toString();
+            public void onClick(View v) {
 
-                sendDataToActivity("Male",distance,age);
+                int age = Integer.parseInt(ageEditText.getText().toString());
+                float distance = Float.parseFloat(distanceEditText.getText().toString());
+                String gender = etGender;
+
+                sendDataToActivity("Male", distance, age);
+//                startActivity(new Intent(getContext(), MainActivity.class));
+
             }
         });
         return view;
