@@ -26,12 +26,13 @@
         android:layout_height="wrap_content"
         android:text="Filter by gender"
         android:textSize="24dp"
-        tools:layout_constraintBottom_creator="1"
         android:layout_marginStart="28dp"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="8dp"
-        tools:layout_editor_absoluteY="131dp" />
+        android:layout_marginLeft="28dp"
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginTop="25dp"
+        app:layout_constraintTop_toBottomOf="@+id/distanceEditText" />
 
     <TextView
         android:id="@+id/textView4"
@@ -44,7 +45,8 @@
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="28dp"
-        tools:layout_editor_absoluteY="281dp" />
+        android:layout_marginTop="49dp"
+        app:layout_constraintTop_toBottomOf="@+id/genderRadioGroup" />
 
     <EditText
         android:id="@+id/ageEditText"
@@ -66,7 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="79dp"
-        android:layout_marginLeft="107dp"
+        android:layout_marginLeft="119dp"
         android:layout_marginStart="119dp"
         android:layout_marginTop="81dp"
         android:onClick="applyFiltersClicked"
@@ -86,16 +88,24 @@
         android:ems="10"
         android:inputType="number"
         android:text="1000"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="63dp" />
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="63dp"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
         android:id="@+id/genderRadioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="200dp">
+        tools:layout_constraintTop_creator="1"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        tools:layout_constraintLeft_creator="1"
+        app:layout_constraintLeft_toLeftOf="parent">
 
         <RadioButton
             android:id="@+id/radioButton3"

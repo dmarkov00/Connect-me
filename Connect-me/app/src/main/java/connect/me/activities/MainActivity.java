@@ -1,13 +1,17 @@
 package connect.me.activities;
 
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -53,7 +57,11 @@ import connect.me.fragments.AboutFragment;
 import connect.me.fragments.FiltersFragment;
 import connect.me.fragments.OwnProfileFragment;
 import connect.me.fragments.ProfileFragment;
+
 import connect.me.utilities.Filter;
+
+import connect.me.utilities.Helpers;
+
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener, FiltersFragment.OnFragmentInteractionListener, GoogleMap.OnMarkerClickListener {
@@ -68,7 +76,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DatabaseReference mDatabase;
     private String username;
     private String email;
+
     private Location currentLoggedInUserLocation;
+    private List<AdditionalUserData> listOfUsers;
+    private float distanceBetweenUsers;
+
+
     //used to store all the users and maps user id to additionalUserData object
     private HashMap<String, AdditionalUserData> userIdAdditionalUserDataMap = new HashMap<>();
 
@@ -81,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDatabase = FirebaseDatabase.getInstance().getReference().child("additionalUserData");
         firebaseAuth = FirebaseAuth.getInstance();
         markersList = new ArrayList<>();
+        listOfUsers = new ArrayList<>();
         userId = firebaseAuth.getCurrentUser().getUid();
         username = firebaseAuth.getCurrentUser().getDisplayName();
         email = firebaseAuth.getCurrentUser().getEmail();
@@ -229,6 +243,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             // Getting location for use in other methods
             mDatabase.child(userId).child("latitude").setValue(ll.latitude);
             mDatabase.child(userId).child("longitude").setValue(ll.longitude);
+            for (AdditionalUserData user: listOfUsers){
+                Location locationOfOthers = Helpers.convertToLocation(user.getLongitude(),user.getLatitude());
+                distanceBetweenUsers = Helpers.getDistanceBetweenLocations(location,locationOfOthers);
+                if(distanceBetweenUsers < 10)
+                {
+                    Vibrator v = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
+                    v.vibrate(1000);
+                    NotificationCompat.Builder mBuilder =
+                            new NotificationCompat.Builder(MainActivity.this)
+                                    .setSmallIcon(R.drawable.notification)
+                                    .setContentTitle("New notification")
+                                    .setContentText(user.getName() + " is " + distanceBetweenUsers + " meters away from you.");
+                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    mNotificationManager.notify(1,mBuilder.build());
+                }
+            }
         }
 
     }
@@ -239,7 +269,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             for (Marker m : markersList) {
                 if (m.getTitle().equals(key)) {
                     m.remove(); //removes the previous current location
-                    markersList.remove(m);
                 }
             }
 
@@ -293,6 +322,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (additionalUserData.getLongitude() == 0 || additionalUserData.getLatitude() == 0) {
                         return;
                     }
+                    listOfUsers.add(additionalUserData);
                     placeMarker(new LatLng(additionalUserData.getLatitude(), additionalUserData.getLongitude()), u.getKey());
                 }
             }
@@ -319,7 +349,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onFragmentInteraction(String gender, float distance, int age) {
-        Log.v("data", gender);
+
         HashMap<String, AdditionalUserData> filterResult = Filter.applyFilters(userIdAdditionalUserDataMap, currentLoggedInUserLocation, gender, distance, age);
         hideFilteredMarkers(filterResult);
     }
@@ -331,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             String userFromFilteredResult = entry.getKey();
 
             for (Marker m : markersList) {
-                if (m.getTitle().equals(userFromFilteredResult) && additionalUserData.isFiltered()) {
+                if (m.getTitle().equals(userFromFilteredResult) && additionalUserData.isFiltered() && !m.getTitle().equals(userId)) {
                     m.setVisible(false);
                 }
             }
