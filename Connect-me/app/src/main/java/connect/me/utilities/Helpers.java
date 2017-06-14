@@ -9,6 +9,8 @@ import android.location.Location;
 public class Helpers {
 
     public static float getDistanceBetweenLocations(Location first, Location second) {
+        if(first == null || second == null)
+            return 0;
 
         return first.distanceTo(second);
     }

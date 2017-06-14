@@ -76,10 +76,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DatabaseReference mDatabase;
     private String username;
     private String email;
-
-    private Location currentLoggedInUserLocation;
-    private List<AdditionalUserData> listOfUsers;
     private float distanceBetweenUsers;
+    private Location myLocation;
 
 
     //used to store all the users and maps user id to additionalUserData object
@@ -94,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDatabase = FirebaseDatabase.getInstance().getReference().child("additionalUserData");
         firebaseAuth = FirebaseAuth.getInstance();
         markersList = new ArrayList<>();
-        listOfUsers = new ArrayList<>();
         userId = firebaseAuth.getCurrentUser().getUid();
         username = firebaseAuth.getCurrentUser().getDisplayName();
         email = firebaseAuth.getCurrentUser().getEmail();
@@ -236,31 +233,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if (location == null) {
             Toast.makeText(this, "Cannot get current location", Toast.LENGTH_LONG).show();
-        } else {
-            // Getting user location for later use in distance filter
-            currentLoggedInUserLocation = location;
-            LatLng ll = new LatLng(location.getLatitude(), location.getLongitude()); //getting the current location
-            // Getting location for use in other methods
-            mDatabase.child(userId).child("latitude").setValue(ll.latitude);
-            mDatabase.child(userId).child("longitude").setValue(ll.longitude);
-            for (AdditionalUserData user: listOfUsers){
-                Location locationOfOthers = Helpers.convertToLocation(user.getLongitude(),user.getLatitude());
-                distanceBetweenUsers = Helpers.getDistanceBetweenLocations(location,locationOfOthers);
-                if(distanceBetweenUsers < 10)
-                {
-                    Vibrator v = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
-                    v.vibrate(1000);
-                    NotificationCompat.Builder mBuilder =
-                            new NotificationCompat.Builder(MainActivity.this)
-                                    .setSmallIcon(R.drawable.notification)
-                                    .setContentTitle("New notification")
-                                    .setContentText(user.getName() + " is " + distanceBetweenUsers + " meters away from you.");
-                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    mNotificationManager.notify(1,mBuilder.build());
-                }
-            }
+            return;
         }
+        myLocation=location;
 
+        LatLng ll = new LatLng(location.getLatitude(), location.getLongitude()); //getting the current location
+        // Getting location for use in other methods
+        mDatabase.child(userId).child("latitude").setValue(ll.latitude);
+        mDatabase.child(userId).child("longitude").setValue(ll.longitude);
     }
 
     public void placeMarker(LatLng ll, String key) {
@@ -271,7 +251,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     m.remove(); //removes the previous current location
                 }
             }
-
         }
         MarkerOptions options;
 
@@ -311,19 +290,49 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean vibration = false;
                 for (DataSnapshot u : dataSnapshot.getChildren()) {
 
-                    // Retrieving data per user
-                    AdditionalUserData additionalUserData = u.getValue(AdditionalUserData.class);
+                    Location locationOfOthers = Helpers.convertToLocation(u.child("longitude").getValue(Double.class), u.child("latitude").getValue(Double.class));
 
-                    // Filling up the hashmap with values for later use
-                    userIdAdditionalUserDataMap.put(u.getKey(), additionalUserData);
+                    if(myLocation != null && u.getKey() != userId) {
+                        Log.v("theKey",u.getKey());
+                        Log.v("iserId",userId);
 
-                    if (additionalUserData.getLongitude() == 0 || additionalUserData.getLatitude() == 0) {
-                        return;
+                        distanceBetweenUsers = Helpers.getDistanceBetweenLocations(myLocation, locationOfOthers);
                     }
-                    listOfUsers.add(additionalUserData);
-                    placeMarker(new LatLng(additionalUserData.getLatitude(), additionalUserData.getLongitude()), u.getKey());
+                    AdditionalUserData additionalUserData = null;
+                    additionalUserData = u.getValue(AdditionalUserData.class);
+                    userIdAdditionalUserDataMap.put(u.getKey(), additionalUserData);
+                    if (distanceBetweenUsers < 10) {
+
+                        if(u.getKey().equals(userId)){
+                            vibration = false;
+                        }
+                        else{
+                            vibration = true;
+                            NotificationCompat.Builder mBuilder =
+                                    new NotificationCompat.Builder(MainActivity.this)
+                                            .setSmallIcon(R.drawable.notification)
+                                            .setContentTitle("New notification")
+                                            .setContentText(u.child("name").getValue() + " is " + distanceBetweenUsers + " meters away from you.");
+                            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                            mNotificationManager.notify(1, mBuilder.build());
+                        }
+                    }
+
+                    if (additionalUserData != null && additionalUserData.getLongitude() != 0 && additionalUserData.getLatitude() != 0) {
+                        placeMarker(new LatLng(additionalUserData.getLatitude(), additionalUserData.getLongitude()), u.getKey());
+                                Log.v("trali","ffffff");
+                    }
+                }
+                Vibrator v = (Vibrator) MainActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
+
+                if(vibration){
+                    v.vibrate(1000);
+                }
+                else{
+                    v.cancel();
                 }
             }
 

@@ -24,13 +24,19 @@ public class AdditionalUserData implements Parcelable {
     private int age;
     public AdditionalUserData(){}
 
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
     public AdditionalUserData(String gender, String phoneNumber, String name, int age) {
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.name = name;
         this.age = age;
-        this.longitude = 0;
-        this.latitude = 0;
     }
 
     protected AdditionalUserData(Parcel in) {

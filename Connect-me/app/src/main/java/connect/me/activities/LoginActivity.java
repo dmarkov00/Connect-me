@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity{
             return;
         }
         //if email and password are filled in we are registering our user
-        progressDialog.setMessage("Registering user in progress");
+        progressDialog.setMessage("Login in progress");
         progressDialog.show();
 
         firebaseAuth.signInWithEmailAndPassword(email,password)
