@@ -3,6 +3,7 @@ package connect.me.activities;
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -199,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY); //gives the precise location of the user
         mLocationRequest.setInterval(1000); //every second the users location is refreshed
+        mLocationRequest.setSmallestDisplacement(5);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -213,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this); //gets the user location depending on the mLocationRequest object
+
 
     }
 
@@ -244,14 +247,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void placeMarker(LatLng ll, String key) {
-        if (firebaseAuth.getCurrentUser().getUid().equals(key)) {
-
-            for (Marker m : markersList) {
-                if (m.getTitle().equals(key)) {
-                    m.remove(); //removes the previous current location
-                }
-            }
-        }
+//        if (firebaseAuth.getCurrentUser().getUid().equals(key)) {
+//
+//            for (Marker m : markersList) {
+//                if (m.getTitle().equals(key)) {
+//                    m.remove(); //removes the previous current location
+//                }
+//            }
+//        }
         MarkerOptions options;
 
 
@@ -264,12 +267,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
-        for (Marker m : markersList) {
-            if (m.getTitle().equals(options.getTitle())) {
-                markersList.remove(m);
-                break;
-            }
-        }
+//        for (Marker m : markersList) {
+//            if (m.getTitle().equals(options.getTitle())) {
+//                markersList.remove(m);
+//                break;
+//            }
+//        }
 
 
         myMarker = mGoogleMap.addMarker(options);
@@ -302,6 +305,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean vibration = false;
+                mGoogleMap.clear();
                 for (DataSnapshot u : dataSnapshot.getChildren()) {
 
                     Location locationOfOthers = Helpers.convertToLocation(u.child("longitude").getValue(Double.class), u.child("latitude").getValue(Double.class));
@@ -411,5 +415,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return false;
     }
 
-
+    @Override
+    public void onBackPressed() {
+        Log.d("CDA", "onBackPressed Called");
+        Intent setIntent = new Intent(Intent.ACTION_MAIN);
+        setIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    }
 }
