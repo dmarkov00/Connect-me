@@ -74,8 +74,7 @@ public class FiltersFragment extends DialogFragment {
         ageEditText = (EditText) view.findViewById(R.id.ageEditText);
         distanceEditText = (EditText) view.findViewById(R.id.distanceEditText);
         genderRadioGroup = (RadioGroup) view.findViewById(R.id.genderRadioGroup);
-        // Setting radio button to be checked by default
-        ((RadioButton) genderRadioGroup.getChildAt(0)).setChecked(true);
+
 
         genderRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -106,7 +105,7 @@ public class FiltersFragment extends DialogFragment {
                 String gender = etGender;
 
                 sendDataToActivity("Male", distance, age);
-//                startActivity(new Intent(getContext(), MainActivity.class));
+                startActivity(new Intent(getContext(), MainActivity.class));
 
             }
         });

@@ -35,6 +35,9 @@ public class Filter {
     }
 
     private static HashMap<String, AdditionalUserData> genderFilter(HashMap<String, AdditionalUserData> userIdToAdditionalUserData, String gender) {
+//        if (gender.equals("")) {
+//            return userIdToAdditionalUserData;
+//        }
         for (Map.Entry<String, AdditionalUserData> entry : userIdToAdditionalUserData.entrySet()) {
             AdditionalUserData additionalUserData = entry.getValue();
             if (additionalUserData.getGender().equals(gender)) {

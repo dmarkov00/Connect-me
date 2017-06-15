@@ -277,6 +277,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         myMarker = mGoogleMap.addMarker(options);
         markersList.add(myMarker);
+        // applying filters on every added marker
+//        HashMap<String, AdditionalUserData> filterResult = Filter.applyFilters(userIdAdditionalUserDataMap, myLocation, globGender, globDistance, globAge);
+//        hideFilteredMarkers(filterResult);
     }
 
     //implementation of OnMapReadyCallback interface
@@ -369,9 +372,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return null;
     }
 
+//     private String globGender = "";
+//    private float globDistance = 1000;
+//    private int globAge = 100;
     @Override
     public void onFragmentInteraction(String gender, float distance, int age) {
-
+// globGender = gender;
+//        globDistance = distance;
+//        globAge = age;
         HashMap<String, AdditionalUserData> filterResult = Filter.applyFilters(userIdAdditionalUserDataMap, myLocation, gender, distance, age);
         hideFilteredMarkers(filterResult);
     }
